@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    />
+    <title>MentorLink | Authentication Panel</title>
+    <link rel="shortcut icon" href="images/LOGO.jpg" type="image/x-icon">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: #f1f5f9;
+        color: #0f2b4d;
+      }
+
+      .auth-container {
+        max-width: 1300px;
+        margin: 0 auto;
+        padding: 100px 24px 40px;
+      }
+
+      .blueprint-header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+      .blueprint-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #0f2b4d;
+      }
+      .blueprint-header p {
+        color: #475569;
+        border-top: 1px dashed #cbd5e1;
+        display: inline-block;
+        padding-top: 12px;
+        margin-top: 12px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 32px;
+        padding: 32px 28px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e2e8f0;
+        transition: 0.2s;
+        height: 100%;
+      }
+      .card:hover {
+        border-color: #f59e0b;
+        box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-left: 4px solid #f59e0b;
+        padding-left: 16px;
+      }
+
+      .input-group {
+        margin-bottom: 20px;
+      }
+      .input-group label {
+        display: block;
+        font-weight: 500;
+        font-size: 0.85rem;
+        margin-bottom: 6px;
+        color: #334155;
+      }
+      .input-group input,
+      .input-group select {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 20px;
+        border: 1px solid #cbd5e1;
+        font-family: "Inter", sans-serif;
+        font-size: 0.95rem;
+        background: #fefefe;
+        transition: 0.1s;
+      }
+      .input-group input:focus,
+      .input-group select:focus {
+        outline: none;
+        border-color: #f59e0b;
+        box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+      }
+
+      .btn-block {
+        width: 100%;
+        padding: 14px;
+        border-radius: 40px;
+        font-weight: 600;
+        font-size: 1rem;
+        border: none;
+        background: #0f2b4d;
+        color: white;
+        margin-top: 12px;
+        cursor: pointer;
+        transition: 0.1s;
+      }
+      .btn-block-secondary {
+        background: #f59e0b;
+        color: #0f2b4d;
+      }
+      .btn-block-outline {
+        background: transparent;
+        border: 1px solid #cbd5e1;
+        color: #0f2b4d;
+      }
+
+      .auth-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+        margin-bottom: 48px;
+      }
+
+      .nkwa-badge-sm {
+        background: #0f2b4d10;
+        padding: 6px 14px;
+        border-radius: 40px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #0f2b4d;
+      }
+      .note-blueprint {
+        text-align: center;
+        font-size: 0.7rem;
+        color: #6c757d;
+        margin-top: 32px;
+        border-top: 1px dashed #cbd5e1;
+        padding-top: 24px;
+      }
+      .fake-link {
+        color: #f59e0b;
+        text-decoration: none;
+      }
+      .logo-mini {
+        font-weight: 800;
+        font-size: 1.3rem;
+      }
+      i.icon-gold {
+        color: #f59e0b;
+      }
+
+      @media (max-width: 800px) {
+        .auth-container {
+          padding: 90px 15px 30px;
+        }
+        .auth-row {
+          grid-template-columns: 1fr;
+          gap: 24px;
+        }
+        .blueprint-header h1 {
+          font-size: 1.6rem;
+        }
+        .card {
+          padding: 24px 20px;
+        }
+        .card-title {
+          font-size: 1.2rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .auth-container {
+          padding: 80px 10px 20px;
+        }
+        .card {
+          padding: 20px 15px;
+          border-radius: 20px;
+        }
+        .card-title {
+          font-size: 1.1rem;
+        }
+        .input-group {
+          margin-bottom: 15px;
+        }
+        .input-group input,
+        .input-group select {
+          padding: 12px 14px;
+          border-radius: 15px;
+        }
+        .btn-block {
+          padding: 12px;
+          border-radius: 30px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">
+          <h1 id="logo" class="name">Mentor<span>Link</span></h1>
+        </div>
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="navlinks">
+          <a class="links" href="dashboard.html#projects-page">Projects</a>
+          <a class="links" href="dashboard.html#student-page">Students</a>
+          <a class="links" href="dashboard.html#mentor-page">Mentors</a>
+          <a id="signin" class="links" href="#">Sign in</a>
+          <a id="get" class="links" href="#">Get a mentor</a>
+        </div>
+      </nav>
+      <div class="side-menu">
+        <div class="sidemenu-header">
+          <h2>Mentor<span>Link</span></h2>
+        </div>
+        <div class="side-search">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search projects, mentors..." />
+        </div>
+        <div class="navlinks">
+          <a class="links" href="index.html"
+            ><i class="fas fa-home"></i> Home</a
+          >
+          <a class="links" href="dashboard.html#projects-page"
+            ><i class="fas fa-briefcase"></i> Projects</a
+          >
+          <a class="links" href="dashboard.html#student-page"
+            ><i class="fas fa-user-graduate"></i> Students</a
+          >
+          <a class="links" href="dashboard.html#mentor-page"
+            ><i class="fas fa-chalkboard-user"></i> For Mentors</a
+          >
+           <a class="links" href="profile.html"
+             ><i class="fas fa-user-circle"></i> My Account</a
+           >
+        </div>
+        <div class="sidemenu-cta">
+          <a id="signin" class="links" href="#">Sign in</a>
+          <a id="get" class="links" href="#">Get a mentor</a>
+        </div>
+      </div>
+      <div class="overlay"></div>
+    </header>
+
+    <main class="auth-container">
+      <div class="blueprint-header">
+        <div class="logo-mini" style="font-size: 2rem">
+          Mentor<span style="color: #f59e0b">Link</span>
+        </div>
+        <h1><i class="fas fa-lock icon-gold"></i> Authentication</h1>
+      </div>
+
+      <div class="auth-row">
+        <div class="card">
+          <div class="card-title">
+            <i class="fas fa-sign-in-alt icon-gold"></i>
+            <span>Log in to MentorLink</span>
+          </div>
+          <form>
+            <div class="input-group">
+              <label><i class="far fa-envelope"></i> Email address</label>
+              <input
+                type="email"
+                placeholder="roschebori@gmail.com"
+                value="roschebori@gmail.com"
+              />
+            </div>
+            <div class="input-group">
+              <label><i class="fas fa-lock"></i> Password</label>
+              <input
+                type="password"
+                placeholder="••••••••"
+                value="password123"
+              />
+            </div>
+
+            <button class="btn-block">Log in →</button>
+          </form>
+          <p style="margin-top: 24px; text-align: center; font-size: 0.85rem">
+            Don't have an account?
+            <a href="#" class="fake-link" style="font-weight: 600">Sign up</a>
+          </p>
+          <div
+            class="nkwa-badge-sm"
+            style="
+              margin-top: 20px;
+              justify-content: center;
+              width: fit-content;
+            "
+          >
+            <i class="fas fa-shield-alt"></i> Secured by Nkwa Pay
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <i class="fas fa-user-plus icon-gold"></i>
+            <span>Create account</span>
+          </div>
+          <form>
+            <div class="input-group">
+              <label>Full name</label>
+              <input type="text" placeholder="Rosch E." value="Rosch E." />
+            </div>
+            <div class="input-group">
+              <label>Email</label>
+              <input
+                type="email"
+                placeholder="roschebori@gmail.com"
+                value="roschebori@gmail.com"
+              />
+            </div>
+            <div class="input-group">
+              <label>Password</label>
+              <input type="password" placeholder="Create a strong password" />
+            </div>
+            <div class="input-group">
+              <label>Confirm password</label>
+              <input type="password" placeholder="Confirm password" />
+            </div>
+            <div class="input-group">
+              <label>I am a</label>
+              <select>
+                <option>
+                  Student looking for projects and skill to learn a skill in
+                  tech
+                </option>
+                <option>Mentor / Expert</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>Where I reside</label>
+              <select>
+                <option value="">Region</option>
+                <option value="">Center</option>
+                <option value="">Littoral</option>
+                <option value="">South West</option>
+                <option value="">North West</option>
+                <option value="">Far North</option>
+                <option value="">North</option>
+                <option value="">South</option>
+                <option value="">West</option>
+                <option value="">East</option>
+                <option value="">Adamawa</option>
+              </select>
+            </div>
+            <button class="btn-block btn-block-secondary">
+              Sign up for free
+            </button>
+            <p style="margin-top: 16px; font-size: 0.7rem; text-align: center">
+              By signing up you agree to our
+              <a href="#" class="fake-link">Terms</a> and
+              <a href="#" class="fake-link">Privacy</a>.
+            </p>
+          </form>
+          <div class="nkwa-badge-sm" style="margin-top: 16px">
+            <i class="fab fa-nfc-symbol"></i> Payments powered by Nkwa Pay
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container5">
+        <h1 class="lastheading">Mentor<span>Link</span></h1>
+        <div class="message">
+          <p>Project-based learning &</p>
+          <p>monetization platform</p>
+          <p>with escrow payments.</p>
+        </div>
+      </div>
+      <div class="footerlinks">
+        <a class="footerlink" href="index.html"><strong>Home</strong></a>
+        <a class="footerlink" href="dashboard.html#projects-page">Projects</a>
+        <a class="footerlink" href="dashboard.html#dashboard-page">Activity</a>
+        <a class="footerlink" href="dashboard.html#mentor-page">Mentors</a>
+        <a class="footerlink" href="dashboard.html#student-page">Students</a>
+        <a class="footerlink" href="review.html"><strong>Reviews</strong></a>
+      </div>
+      <p class="copyright">
+        &copy; 2026 MentorLink. All trademarks reserved. powered by
+        RgTech/Nkwa pay.
+      </p>
+      <div class="social-links">
+        <a href=""><i class="fa-brands fa-facebook"></i></a>
+        <a href=""><i class="fa-brands fa-instagram"></i></a>
+        <a href=""><i class="fa-brands fa-telegram"></i></a>
+      </div>
+    </footer>
+
+    <script src="firebaseconfig.js"></script>
+    <script src="app.js"></script>
+    <script type="text/javascript">
+      var Tawk_API = Tawk_API || {},
+        Tawk_LoadStart = new Date();
+      (function () {
+        var s1 = document.createElement("script"),
+          s0 = document.getElementsByTagName("script")[0];
+        s1.async = true;
+        s1.src = "https://embed.tawk.to/69e2c95da7ff261c327a9c4c/1jmeu55bc";
+        s1.charset = "UTF-8";
+        s1.setAttribute("crossorigin", "*");
+        s0.parentNode.insertBefore(s1, s0);
+      })();
+    </script>
+  </body>
+</html>

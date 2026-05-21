@@ -1,231 +1,146 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment Page — MentorLink</title>
-
-  <!-- Firebase v9 compat -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-  <!-- Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
-  <link rel="stylesheet" href="fontawesome/css/all.min.css" />
-
-  <style>
-    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-    body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:#f0f4f8; min-height:100vh; padding:1rem; }
-
-    .pay-nav { background:rgba(255,255,255,0.85); backdrop-filter:blur(12px); border-bottom:1px solid #e2e8f0; padding:0.75rem 1.5rem; display:flex; align-items:center; gap:1rem; position:sticky; top:0; z-index:100; border-radius:10px; margin-bottom:1rem; }
-    .pay-nav a { text-decoration:none; color:#64748b; font-weight:500; font-size:0.9rem; }
-    .pay-nav a:hover { color:#4f46e5; }
-    .pay-nav .logout-btn { color:#ef4444; cursor:pointer; font-weight:600; margin-left:auto; }
-
-    .pg { background:#fff; width:100%; max-width:520px; margin:0 auto; border-radius:16px; overflow:hidden; box-shadow:0 2px 20px rgba(0,0,0,.08); }
-    .pg-header { background:#2552cc; padding:1rem 1.5rem; display:flex; align-items:center; gap:10px; }
-    .pg-header span { color:#fff; font-size:14px; font-weight:500; }
-    .pg-header i { font-size:20px; color:rgba(255,255,255,.85); }
-
-    .pg-body { padding:1.5rem; }
-    .service-name { font-size:1.1rem; font-weight:700; color:#1e293b; margin-bottom:1.5rem; }
-
-    .info-row { display:flex; justify-content:space-between; padding:.6rem 0; border-bottom:1px solid #f1f5f9; font-size:.9rem; }
-    .info-row:last-child { border:none; }
-    .info-row .label { color:#64748b; }
-    .info-row .value { font-weight:600; color:#1e293b; }
-
-    .method-section { margin-top:1.5rem; }
-    .method-title { font-size:.9rem; font-weight:700; color:#1e293b; margin-bottom:.75rem; }
-    .method-card { display:flex; align-items:center; gap:12px; padding:.9rem 1rem; border:1.5px solid #e2e8f0; border-radius:12px; cursor:pointer; transition:.15s; margin-bottom:.6rem; }
-    .method-card:hover, .method-card.active { border-color:#2552cc; background:#f0f5ff; }
-    .method-card .icon { width:42px; height:30px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.8rem; font-weight:800; }
-    .method-card .info .name { font-size:.9rem; font-weight:600; }
-    .method-card .info .sub { font-size:.8rem; color:#64748b; }
-
-    .momo-fields { display:none; margin-top:.5rem; margin-bottom:1rem; }
-    .momo-fields.show { display:block; }
-    .momo-fields input, .momo-fields select { width:100%; padding:.7rem; border:1.5px solid #e2e8f0; border-radius:8px; font-size:.9rem; margin-bottom:.6rem; font-family:inherit; }
-    .momo-fields input:focus, .momo-fields select:focus { border-color:#2552cc; outline:none; }
-
-    .pay-btn { width:100%; background:#2552cc; color:#fff; border:none; border-radius:12px; padding:1rem; font-size:1rem; font-weight:700; cursor:pointer; transition:.15s; font-family:inherit; margin-top:1rem; }
-    .pay-btn:hover { background:#1a3ba0; }
-
-    .secure-note { text-align:center; font-size:.8rem; color:#94a3b8; margin-top:.75rem; display:flex; align-items:center; justify-content:center; gap:5px; }
-
-    .amount-tag { background:#f0f5ff; border-radius:9px; padding:.75rem 1rem; font-size:.9rem; color:#1e293b; font-weight:500; margin-top:1rem; text-align:center; }
-    .success-msg { background:#d1fae5; color:#065f46; padding:12px; border-radius:8px; margin-bottom:15px; display:none; }
-    .error-msg { background:#fee2e2; color:#991b1b; padding:12px; border-radius:8px; margin-bottom:15px; display:none; }
-
-    @media(max-width:560px) { .pg { border-radius:0; box-shadow:none; } }
-  </style>
-</head>
-<body>
-  <div class="pay-nav">
-    <a href="dashboard-1.html">← Dashboard</a>
-    <a href="Account.html">Account</a>
-    <a href="AdminPanel.html">Admin</a>
-    <a href="Landing.html">Home</a>
-    <span class="logout-btn" onclick="handleLogout()">Logout</span>
-  </div>
-
-  <div class="pg">
-    <div class="pg-header">
-      <i class="ti ti-shield-check"></i>
-      <span>Secure Payment</span>
-    </div>
-
-    <div class="pg-body">
-      <div class="service-name">Mentorship Session Booking</div>
-      
-      <div id="payment-success" class="success-msg"></div>
-      <div id="payment-error" class="error-msg"></div>
-
-      <div class="info-row"><span class="label">Service</span><span class="value">1-on-1 Mentorship Session</span></div>
-      <div class="info-row"><span class="label">Duration</span><span class="value">60 min</span></div>
-      <div class="info-row"><span class="label">Amount</span><span class="value" style="color:#2552cc">10,000 XAF</span></div>
-
-      <div class="amount-tag">
-        <i class="fa fa-coins" style="color:#f59e0b;margin-right:6px"></i>
-        Total: <strong>10,000 XAF</strong>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="auth.css" />
+    <title>MentorLink | Payment Checkout</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">
+          <h1 id="logo" class="name">Mentor<span>Link</span></h1>
+        </div>
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="navlinks">
+          <a class="links" href="dashboard.html#projects-page">Projects</a>
+          <a class="links" href="dashboard.html#student-page">Students</a>
+          <a class="links" href="dashboard.html#mentor-page">For Mentors</a>
+          <a id="signin" class="links" href="authentication.html">Sign in</a>
+          <a id="get" class="links" href="authentication.html">Get a mentor</a>
+        </div>
+      </nav>
+      <div class="side-menu">
+        <div class="sidemenu-header">
+          <h2>Mentor<span>Link</span></h2>
+        </div>
+        <div class="side-search">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search projects, mentors..." />
+        </div>
+        <div class="navlinks">
+          <a class="links" href="index.html"><i class="fas fa-home"></i> Home</a>
+          <a class="links" href="dashboard.html#projects-page"><i class="fas fa-briefcase"></i> Projects</a>
+          <a class="links" href="dashboard.html#student-page"><i class="fas fa-user-graduate"></i> Students</a>
+          <a class="links" href="dashboard.html#mentor-page"><i class="fas fa-chalkboard-user"></i> For Mentors</a>
+          <a class="links" href="dashboard.html#dashboard-page"><i class="fas fa-user-circle"></i> My Account</a>
+        </div>
+        <div class="sidemenu-cta">
+          <a id="signin" class="links" href="authentication.html">Sign in</a>
+          <a id="get" class="links" href="authentication.html">Get a mentor</a>
+        </div>
       </div>
+      <div class="overlay"></div>
+    </header>
+    <main class="payment-main">
+      <h1 class="payment-title">Mentor<span>Link</span></h1>
+      <p class="payment-subtitle">Payment Checkout Panel</p>
 
-      <div class="method-section">
-        <div class="method-title">Choose Payment Method</div>
-
-        <div class="method-card active" onclick="selectMethod(this,'wallet')">
-          <div class="icon" style="background:#4f46e5;color:#fff">F</div>
-          <div class="info">
-            <div class="name">Fapshi Payment Link</div>
-            <div class="sub">Secure payment wallet — recommended</div>
+      <section class="pcontainer">
+        <div class="pmain">
+          <div class="details">
+            <h2>Skill Details</h2>
+            <p>Mentored By: <span>----------</span></p>
+            <p>Duration: <span>----------</span></p>
+            <p>Project: <span>----------</span></p>
+            <p>Project Amount: <span>0.0 XAF</span></p>
+            <p>Fee: <span>0.0 XAF</span></p>
+            <hr>
+            <p class="total">Total: <span>0.0 XAF</span></p>
           </div>
         </div>
 
-        <div class="method-card" onclick="selectMethod(this,'momo')">
-          <div class="icon" style="background:#facc15;color:#333">M</div>
-          <div class="info">
-            <div class="name">Mobile Money</div>
-            <div class="sub">MTN / Orange Money</div>
+        <div class="checkout">
+          <h2>Complete checkout and Payment</h2>
+          <form action="">
+            <label for="">Full Name</label>
+            <input type="text" placeholder="Rosch Ebori" required />
+            <label for="">Email</label>
+            <input type="email" placeholder="roschebori@gmail.com" required />
+            <label for="">Number</label>
+            <input type="text" placeholder="Enter payment number" required />
+            <label for="">Location</label>
+            <select>
+              <option value="">Region</option>
+              <option value="">Center</option>
+              <option value="">Littoral</option>
+              <option value="">South West</option>
+              <option value="">North West</option>
+              <option value="">Far North</option>
+              <option value="">North</option>
+              <option value="">South</option>
+              <option value="">West</option>
+              <option value="">East</option>
+              <option value="">Adamawa</option>
+            </select>
+          </form>
+        </div>
+
+        <div class="pcontainer2">
+          <div>
+            <h2>Payment Method</h2>
           </div>
+          <div class="selectmethod">
+            <img src="images/images.jpeg" alt="MTN MoMo">
+            <img src="images/unnamed.png" alt="Orange Money">
+          </div>
+          <button class="paymentbtn">Confirm payment <i class="fa fa-credit-card"></i></button>
         </div>
-
-        <div class="momo-fields" id="momoFields">
-          <label style="font-size:.85rem;color:#64748b;display:block;margin-bottom:5px">Phone number</label>
-          <input type="tel" id="momo-phone" placeholder="e.g. 6XXXXXXXX">
-          <label style="font-size:.85rem;color:#64748b;display:block;margin-bottom:5px">Network</label>
-          <select id="momo-network">
-            <option>MTN Mobile Money</option>
-            <option>Orange Money</option>
-          </select>
+      </section>
+    </main>
+    <footer>
+      <div class="container5">
+        <h1 class="lastheading">Mentor<span>Link</span></h1>
+        <div class="message">
+          <p>Project-based learning &</p>
+          <p>monetization platform</p>
+          <p>with escrow payments.</p>
         </div>
       </div>
-
-      <button class="pay-btn" onclick="proceedPayment()">
-        Pay 10,000 XAF
-      </button>
-      <div class="secure-note">
-        <i class="fa fa-lock"></i> Your payment is secure &amp; encrypted
+      <div class="footerlinks">
+        <a class="footerlink" href="index.html"><strong>Home</strong></a>
+        <a class="footerlink" href="dashboard.html#projects-page">Projects</a>
+        <a class="footerlink" href="dashboard.html#dashboard-page">Activity</a>
+        <a class="footerlink" href="dashboard.html#mentor-page">Mentors</a>
+        <a class="footerlink" href="dashboard.html#student-page">Students</a>
+         <a class="footerlink" href="review.html"><strong>Reviews</strong></a>
       </div>
-    </div>
-  </div>
-
-  <script>
-    let selectedPayment = 'wallet';
-    const FAPSHI_LINK = "https://pay.fapshi.com/18869134";
-
-    function selectMethod(el, method) {
-      document.querySelectorAll('.method-card').forEach(function(c){ c.classList.remove('active'); });
-      el.classList.add('active');
-      selectedPayment = method;
-      const momoFields = document.getElementById('momoFields');
-      if (momoFields) {
-        momoFields.classList.toggle('show', method === 'momo');
-      }
-    }
-
-    async function proceedPayment() {
-      const successDiv = document.getElementById('payment-success');
-      const errorDiv = document.getElementById('payment-error');
-      
-      if (successDiv) successDiv.style.display = 'none';
-      if (errorDiv) errorDiv.style.display = 'none';
-
-      if (selectedPayment === 'wallet') {
-        // Open Fapshi payment link
-        window.open(FAPSHI_LINK, '_blank');
-        
-        // Save payment record to Firebase if user is logged in
-        if (typeof firebase !== 'undefined') {
-          firebase.auth().onAuthStateChanged(function(user) {
-            if (user) {
-              const paymentRecord = {
-                userId: user.uid,
-                amount: 10000,
-                currency: 'XAF',
-                method: 'fapshi',
-                status: 'pending',
-                timestamp: Date.now(),
-                service: 'Mentorship Session'
-              };
-              firebase.database().ref('payments/' + Date.now()).set(paymentRecord)
-                .then(() => console.log('Payment record saved'))
-                .catch(err => console.error('Error saving payment:', err));
-            }
-          });
-        }
-        
-        if (successDiv) {
-          successDiv.style.display = 'block';
-          successDiv.innerHTML = 'Payment link opened! Complete your payment in the new tab.';
-        }
-      } else if (selectedPayment === 'momo') {
-        const phone = document.getElementById('momo-phone')?.value || '';
-        const network = document.getElementById('momo-network')?.value || '';
-        
-        if (!phone || phone.length < 9) {
-          if (errorDiv) {
-            errorDiv.style.display = 'block';
-            errorDiv.innerHTML = 'Please enter a valid phone number.';
-          }
-          return;
-        }
-        
-        if (errorDiv) {
-          errorDiv.style.display = 'block';
-          errorDiv.innerHTML = 'Mobile Money payment is coming soon. Please use Fapshi for now.';
-        }
-      }
-    }
-
-    function handleLogout() {
-      if (typeof firebase !== 'undefined') {
-        firebase.auth().signOut().then(function() {
-          window.location.href = 'LogIn.html';
-        }).catch(function(err) {
-          console.error('Logout error:', err);
-          window.location.href = 'LogIn.html';
-        });
-      } else {
-        window.location.href = 'LogIn.html';
-      }
-    }
-
-    // Check authentication
-    document.addEventListener('DOMContentLoaded', function() {
-      if (typeof firebase !== 'undefined') {
-        firebase.auth().onAuthStateChanged(function(user) {
-          if (!user) {
-            // Redirect to login if not authenticated
-            window.location.href = 'LogIn.html';
-          }
-        });
-      }
-      
-      // Remove any skeleton overlays
-      const skeleton = document.getElementById('sk-overlay-payment');
-      if (skeleton) skeleton.remove();
-    });
-  </script>
-</body>
+      <p class="copyright">&copy; 2026 MentorLink. All trademarks reserved. powered by RgTech/Nkwa pay.</p>
+      <div class="social-links">
+        <a href=""><i class="fa-brands fa-facebook"></i></a>
+        <a href=""><i class="fa-brands fa-instagram"></i></a>
+        <a href=""><i class="fa-brands fa-telegram"></i></a>
+      </div>
+    </footer>
+    <script src="firebaseconfig.js"></script>
+    <script src="app.js"></script>
+    <script type="text/javascript">
+      var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+      (function(){
+      var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+      s1.async=true;
+      s1.src='https://embed.tawk.to/69e2c95da7ff261c327a9c4c/1jmeu55bc';
+      s1.charset='UTF-8';
+      s1.setAttribute('crossorigin','*');
+      s0.parentNode.insertBefore(s1,s0);
+      })();
+    </script>
+  </body>
 </html>
