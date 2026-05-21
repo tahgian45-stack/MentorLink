@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Find Mentors | MentorLink</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="fontawesome/css/all.min.css" />
+
+  <!-- Firebase v9 compat (load before mentorlink.js) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <!-- App JS (after Firebase) -->
+  <script src="mentorlink.js"></script>
+</head>
+<body>
+  <nav>
+    <a href="dashboard-1.html">Dashboard</a>
+    <a href="Account.html">Account</a>
+    <a href="AdminPanel.html">Admin</a>
+    <a href="Landing.html">Home</a>
+    <span class="logout" style="cursor:pointer">Logout</span>
+  </nav>
+  <div class="container">
+    <h1>Find Your Mentors</h1>
+
+    <div class="top-bar">
+      <input type="text" id="mentor-search" placeholder="Search by name or skill..." />
+      <select id="mentor-skill-filter">
+        <option value="">All skills</option>
+        <option value="frontend">Frontend</option>
+        <option value="backend">Backend</option>
+        <option value="data">Data</option>
+        <option value="design">Design</option>
+        <option value="mobile">Mobile</option>
+      </select>
+    </div>
+
+    <div id="mentor-skeleton" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 0;gap:1rem">
+      <div style="font-size:1.3rem;font-weight:800;color:#1e293b"><i class="fa fa-users"></i> Mentors</div>
+      <div style="font-size:.9rem;color:#64748b">Loading mentors…</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;width:100%;padding:1rem">
+        <div class="sk-card"></div><div class="sk-card"></div><div class="sk-card"></div><div class="sk-card"></div>
+      </div>
+    </div>
+
+    <div class="mentors">
+
+      
+    </div><!-- /.mentors -->
+  </div>
+</body>
+</html>

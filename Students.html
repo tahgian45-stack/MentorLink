@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Students | MentorLink</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="fontawesome/css/all.min.css">
+
+  <!-- Firebase v9 compat (load BEFORE mentorlink.js) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="mentorlink.js"></script>
+  <style>
+    /* Students page specific */
+    #student-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+      padding-bottom: 3rem;
+    }
+    .student-tag {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: .72rem;
+      font-weight: 700;
+      margin-left: 4px;
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+    #stu-modal {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, .55);
+      z-index: 9999; display: flex; align-items: center; justify-content: center;
+    }
+    #stu-modal.show { display: flex; }
+    .modal-inner {
+      background: #fff; border-radius: 18px; padding: 2rem;
+      max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;
+      animation: slideUp .25s ease-out;
+    }
+    .empty-state { grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; color: #aaa; }
+    .empty-state i { font-size: 3rem; display: block; margin-bottom: 1rem; color: #d1d5db; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="dashboard-1.html">Dashboard</a>
+    <a href="MentorPage.html">Mentors</a>
+    <a href="Projects.html">Projects</a>
+    <a href="Students.html" style="color:#4f46e5;font-weight:600">Students</a>
+    <a href="Account.html">Account</a>
+    <a href="AdminPanel.html">Admin</a>
+    <a href="Landing.html">Home</a>
+    <span class="logout" style="margin-left:auto;cursor:pointer">Logout</span>
+  </nav>
+
+  <!-- Role + connection form -->
+  <div class="container" style="padding-top:1.5rem">
+    <div style="background:#4f46e5;color:#fff;border-radius:14px;padding:1.25rem 1.75rem;margin-bottom:1.5rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+        <h1 style="color:#fff;font-size:1.6rem;font-weight:800">Find Students</h1>
+        <a href="#add-student-anchor" class="btn-post" style="background:#fff;color:#4f46e5;i" id="add-student-anchor">
+          ＋ Add Student Profile
+        </a>
+      </div>
+      <p style="font-size:.9rem;opacity:.85;margin-top:.35rem">
+        Browse student profiles, connect with learners, and share your knowledge.
+      </p>
+    </div>
+
+    <!-- Top bar search + filter -->
+    <div class="top-bar">
+      <input type="text" id="stu-search" placeholder="Search students by name, skill, or goal…">
+      <select id="stu-skill-filter">
+        <option value="">All skills</option>
+        <option value="frontend">Frontend</option>
+        <option value="backend">Backend</option>
+        <option value="data">Data Science</option>
+        <option value="design">Design</option>
+        <option value="mobile">Mobile</option>
+        <option value="general">General</option>
+      </select>
+    </div>
+
+     <!-- Student grid -->
+     <div id="stu-skeleton" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;padding:2rem 0">
+       <div class="sk-card"></div><div class="sk-card"></div><div class="sk-card"></div><div class="sk-card"></div>
+     </div>
+     <div id="student-list">
+       <div class="empty-state"><i class="fa fa-spinner fa-spin"></i><p>Loading students…</p></div>
+     </div>
+  </div>
+
+  <!-- Add Student Profile Form -->
+  <div style="max-width:760px;margin:0 auto 3rem;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem">
+    <h2 style="font-size:1.15rem;font-weight:700;color:#1e293b;margin-bottom:.75rem">Register as a Student</h2>
+    <p style="font-size:.85rem;color:#64748b;margin-bottom:1.25rem">Create your student profile so mentors can find and connect with you.</p>
+
+    <form id="student-form">
+      <!-- Role selector -->
+      <label style="font-size:.8rem;font-weight:700;display:block;margin-bottom:.4rem">I am a…</label>
+      <div id="stu-role-buttons" style="display:flex;gap:.75rem;margin-bottom:1rem">
+        <button type="button" class="active" id="stu-role-student" style="flex:1;padding:.6rem;border-radius:10px;border:1.5px solid #4f46e5;background:#4f46e5;color:#fff;font-weight:600;cursor:pointer;font-family:inherit">Student</button>
+        <button type="button" id="stu-role-mentor" style="flex:1;padding:.6rem;border-radius:10px;border:1.5px solid #4f46e5;background:transparent;color:#4f46e5;font-weight:600;cursor:pointer;font-family:inherit">Mentor</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div>
+          <label class="form-label" for="stu-name">Full Name *</label>
+          <input type="text" id="stu-name" placeholder="Your full name" required style="width:100%;padding:.65rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:inherit">
+        </div>
+        <div>
+          <label class="form-label" for="stu-email">Email *</label>
+          <input type="email" id="stu-email" placeholder="your@email.com" required style="width:100%;padding:.65rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:inherit">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:.75rem">
+        <div>
+          <label class="form-label" for="stu-skill">Primary Skill</label>
+          <input type="text" id="stu-skill" placeholder="e.g. JavaScript, UI Design, Python" style="width:100%;padding:.65rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:inherit">
+        </div>
+        <div>
+          <label class="form-label" for="stu-level">Experience Level</label>
+          <select id="stu-level" style="width:100%;padding:.65rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:inherit;background:#fff">
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="advanced">Advanced</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top:.75rem">
+        <label class="form-label" for="stu-goal">Goals / What you're looking for</label>
+        <textarea id="stu-goal" placeholder="e.g. I want to learn React and build my portfolio with real projects."></textarea>
+      </div>
+
+      <div style="margin-top:.75rem">
+        <label class="form-label" for="stu-image">Profile Image (optional)</label>
+        <input type="file" id="stu-image" accept="image/*">
+        <img id="stu-img-preview" src="" alt="" style="display:none;width:100px;height:100px;object-fit:cover;border-radius:12px;margin-top:8px;border:2px solid #e2e8f0">
+      </div>
+
+      <button type="submit" class="btn-post" style="margin-top:1.25rem;width:100%;justify-content:center">
+        Save Profile
+      </button>
+    </form>
+  </div>
+</body>
+</html>

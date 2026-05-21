@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="LogIn.css">
+  <link rel="stylesheet" href="fontawesome/css/all.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log In — MentorLink</title>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="mentorlink.js"></script>
+
+  <style>
+  @keyframes sk-pulse { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+</style>
+</head>
+<body>
+  <div id="sk-overlay-login" style="position:fixed;inset:0;z-index:9998;background:#f1f5f9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem">
+  <div style="width:320px;display:flex;flex-direction:column;gap:.75rem">
+    <div style="height:20px;width:50%;background:#e2e8f0;border-radius:6px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+    <div style="height:14px;width:80%;background:#d1d5db;border-radius:6px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+    <div style="height:36px;width:100%;background:#e2e8f0;border-radius:8px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+    <div style="height:36px;width:100%;background:#e2e8f0;border-radius:8px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+    <div style="height:36px;width:100%;background:#e2e8f0;border-radius:8px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+  </div>
+</div>
+  <form>
+    <div id="form">
+      <h2>Welcome back!</h2>
+      <p>Log in to continue to MentorLink</p>
+    </div>
+    <div id="list">
+      <label for="Email">Email</label>
+      <input type="email" id="log-email" placeholder="Enter your email" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="log-pass" placeholder="Enter your password" required>
+
+      <a href="#" id="pass">Forgot password?</a>
+
+      <button type="submit">Log In</button>
+
+      <div id="sign">
+        <p>Don't have an account?</p>
+        <a href="signupgageGE.html">Sign Up</a>
+      </div>
+    </div>
+  </form>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var s = document.getElementById('sk-overlay-login');
+    if(s) s.remove();
+  });
+</script>
+</body>
+</html>

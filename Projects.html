@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects | MentorLink</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="fontawesome/css/all.min.css">
+
+  <!-- Firebase v9 compat (load BEFORE mentorlink.js) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="mentorlink.js"></script>
+  <style>
+    /* Projects-specific overrides */
+    .page-header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:1.5rem;
+      flex-wrap:wrap;
+      gap:1rem;
+    }
+    .page-header h1 { font-size:1.6rem; font-weight:800; color:#1e293b; }
+    .btn-post {
+      display:inline-flex; align-items:center; gap:6px;
+      background:#4f46e5; color:#fff; border:none;
+      padding:0.65rem 1.25rem; border-radius:10px;
+      font-size:.9rem; font-weight:600; cursor:pointer;
+      font-family:inherit; transition:background .15s;
+    }
+    .btn-post:hover { background:#4338ca; }
+
+    #project-list {
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
+      gap:1.5rem;
+      padding-bottom:3rem;
+    }
+
+    #project-list .card {
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:16px;
+      overflow:hidden;
+      transition:transform .2s, box-shadow .2s;
+    }
+    #project-list .card:hover { transform:translateY(-4px); box-shadow:0 8px 28px rgba(0,0,0,.08); }
+
+    /* Modal */
+    #proj-modal {
+      position:fixed; inset:0; background:rgba(15,23,42,.55);
+      z-index:9999; display:none; align-items:center; justify-content:center;
+    }
+    #proj-modal.show { display:flex; }
+    #proj-modal .modal-inner {
+      background:#fff; border-radius:18px; padding:2rem;
+      max-width:600px; width:92%; max-height:90vh; overflow-y:auto;
+      animation:slideUp .25s ease-out;
+    }
+    @keyframes slideUp { from { transform:translateY(18px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+    .form-label { display:block; font-size:.8rem; font-weight:700; color:#1e293b; margin-bottom:.35rem; margin-top:.75rem; }
+    textarea { width:100%; padding:.7rem; border:1.5px solid #e2e8f0; border-radius:8px; font-size:.9rem; font-family:inherit; min-height:100px; resize:vertical; outline:none; }
+    textarea:focus { border-color:#4f46e5; box-shadow:0 0 0 3px rgba(79,70,229,.12); }
+
+    .empty-state { grid-column:1/-1; text-align:center; padding:4rem 2rem; color:#aaa; }
+    .empty-state i { font-size:3rem; display:block; margin-bottom:1rem; color:#d1d5db; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="dashboard-1.html">Dashboard</a>
+    <a href="MentorPage.html">Mentors</a>
+    <a href="Students.html">Students</a>
+    <a href="Projects.html" style="color:#4f46e5;font-weight:600">Projects</a>
+    <a href="Account.html">Account</a>
+    <a href="AdminPanel.html">Admin</a>
+    <a href="Landing.html">Home</a>
+    <span class="logout" style="margin-left:auto;cursor:pointer">Logout</span>
+  </nav>
+
+  <div class="container" style="padding-top:1.5rem; padding-bottom:0">
+    <div class="page-header">
+      <h1>Projects</h1>
+      <button class="btn-post" onclick="openProjectModal()">
+        <i class="fa fa-plus"></i> Post Project
+      </button>
+    </div>
+
+    <!-- Search -->
+    <div class="top-bar">
+      <input type="text" id="proj-search" placeholder="Search projects by title or skill...">
+      <select id="proj-skill-filter">
+        <option value="">All skills</option>
+        <option value="frontend">Frontend</option>
+        <option value="backend">Backend</option>
+        <option value="data">Data Science</option>
+        <option value="design">Design</option>
+        <option value="mobile">Mobile</option>
+        <option value="general">General</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Project Grid -->
+<div class="container" style="padding-top:.5rem">
+     <div id="project-list">
+       <div id="proj-skeleton" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 0;gap:1rem">
+         <div style="font-size:1.3rem;font-weight:800;color:#1e293b"><i class="fa fa-folder-open"></i> Projects</div>
+         <div style="font-size:.9rem;color:#64748b">Loading projects…</div>
+         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;width:100%;padding:1rem">
+           <div class="sk-card"></div><div class="sk-card"></div><div class="sk-card"></div><div class="sk-card"></div>
+         </div>
+       </div>
+       <div class="empty-state"><i class="fa fa-spinner fa-spin"></i><p>Loading projects…</p></div>
+     </div>
+   </div>
+
+  <!-- New Project Modal -->
+  <div id="proj-modal">
+    <div class="modal-inner">
+      <button onclick="closeProjectModal()" style="position:absolute;top:16px;right:20px;background:none;border:none;font-size:20px;cursor:pointer;color:#aaa">&times;</button>
+      <h2 style="margin-bottom:1rem;color:#1e293b;font-size:1.3rem">Post a New Project</h2>
+      <form id="project-form">
+        <label class="form-label" for="proj-title">Project Title *</label>
+        <input type="text" id="proj-title" placeholder="e.g. E-commerce website" required style="width:100%;padding:.7rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:inherit">
+
+        <label class="form-label" for="proj-desc">Description *</label>
+        <textarea id="proj-desc" placeholder="Describe what the project is about…" required></textarea>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div>
+            <label class="form-label" for="proj-skill">Skill / Category</label>
+            <input type="text" id="proj-skill" placeholder="e.g. Frontend, Data Science" style="width:100%;padding:.7rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:inherit">
+          </div>
+          <div>
+            <label class="form-label" for="proj-budget">Budget</label>
+            <input type="text" id="proj-budget" placeholder="e.g. 50,000 XAF" style="width:100%;padding:.7rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:inherit">
+          </div>
+        </div>
+
+        <label class="form-label" for="proj-deadline">Deadline</label>
+        <input type="date" id="proj-deadline" style="width:100%;padding:.7rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:inherit">
+
+        <label class="form-label" for="project-image-input">Project Image (optional)</label>
+        <input type="file" id="project-image-input" accept="image/*" style="font-size:.85rem;color:#64748b">
+        <img id="project-img-preview" src="" alt="preview" style="display:none;width:100px;height:100px;object-fit:cover;border-radius:12px;margin-top:8px;border:2px solid #e2e8f0">
+
+        <button type="submit" class="btn-post" style="margin-top:1.25rem">Post Project</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function openProjectModal()  { document.getElementById("proj-modal").classList.add("show"); }
+    function closeProjectModal() { document.getElementById("proj-modal").classList.remove("show"); }
+    // Close modal on backdrop click
+    document.getElementById("proj-modal") && (document.getElementById("proj-modal").addEventListener("click", function(e) { if(e.target===this) closeProjectModal(); }));
+  </script>
+</body>
+</html>

@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="fontawesome/css/all.min.css">
 
-  <!-- Firebase SDK (load before app JS) -->
+  <!-- Firebase SDK (load BEFORE mentorlink.js) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -53,7 +53,7 @@
       <div class="vnavbtns">
         <a href="dashboard-1.html"><i class="fa fa-table-columns vicon"></i>Dashboard</a>
         <a href="MentorPage.html"><i class="fa fa-chalkboard-user vicon"></i>Mentorship</a>
-        <a href="Projects.html"><i class="fa-solid fa-folder-open vicon"></i>Projects</a>
+        <a href="Projects.html"><i class="fa-solid fa-folder-open vicon"></i>Projects</a
         <a href="Students.html"><i class="fa-solid fa-graduation-cap vicon"></i>Students</a>
         <a href=""><i class="fa-solid fa-book-open-reader vicon"></i>Learning</a>
         <a href="payment-page.html"><i class="fa-solid fa-wallet vicon"></i>Payments</a>
@@ -73,6 +73,7 @@
       </p>
     </div>
 
+    <!-- Quick stats cards -->
     <div class="container">
       <div id="card1" class="card">
         <h2 id="dash-projects-pct">0%</h2>
@@ -96,6 +97,7 @@
       </div>
     </div>
 
+    <!-- Progress + recommended -->
     <div class="container2">
       <div id="card11" class="card1">
         <h3>Your progress</h3>
@@ -111,8 +113,9 @@
       </div>
 
       <div id="card12" class="card1">
-        <h3>Recommended For You &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <span style="color:#4f46e5;cursor:pointer">view All</span>
+        <h3>
+          Recommended For You &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <span style="color:#4f46e5;cursor:pointer">View All</span>
         </h3>
         <div class="icon-boxes">
           <div class="avatar a1"><i class="fa fa-book-open"></i></div>
@@ -132,13 +135,14 @@
       </div>
     </div>
 
+    <!-- Upcoming session -->
     <div class="container3">
       <p class="h2">Upcoming Sessions</p>
       <div class="span"><p>R</p></div>
       <div class="names">
-        <p class="h2">Cyber Attacker</p>
-        <p>Rosch Ebori</p>
-        <h3 id="dash-next-session">24 May 2026 - 2:30pm</h3>
+        <p class="h2">Cyber Security Fundamentals</p>
+        <p id="next-mentor-name">Rosch Ebori</p>
+        <h3 id="dash-next-session">24 May 2026 &mdash; 2:30pm</h3>
       </div>
       <button class="btn">Apply Now</button>
     </div>

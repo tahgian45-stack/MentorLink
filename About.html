@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us | MentorLink</title>
+  <link rel="stylesheet" href="Landing.css" />
+  <link rel="stylesheet" href="fontawesome/css/all.min.css" />
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
+  <script src="mentorlink.js"></script>
+</head>
+<body id="body">
+  <header>
+    <navbar>
+      <div id="first">
+        <h3><img src="log.png" alt="logo"> MENTOR<span>LINK</span></h3>
+      </div>
+      <div id="second">
+        <a href="Landing.html">Home</a>
+        <a href="MentorPage.html">Mentors</a>
+        <a href="Account.html">Account</a>
+        <a href="AdminPanel.html">Admin</a>
+        <a href="#">Projects</a>
+        <a href="#">Organizations</a>
+        <a href="About.html" style="color:#4f46e5;font-weight:600">About</a>
+        <a href="LogIn.html" id="Login">Log In</a>
+        <button id="sign" onclick="window.location.href='signupgageGE.html'">Sign Up</button>
+      </div>
+    </navbar>
+  </header>
+
+  <div id="section1">
+    <div id="hero">
+      <h1>About <span style="color:#4f46e5">MentorLink</span></h1>
+      <p style="max-width:600px;font-size:1.1rem;color:#64748b;margin-top:1rem">
+        MentorLink is a mentorship platform that connects students and professionals with experienced mentors across tech, design, data, and more — enabling skill growth, career guidance, and real-world project experience.
+      </p>
+    </div>
+  </div>
+
+  <div id="section3" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;max-width:1100px;margin:2rem auto;">
+    <div id="grid">
+      <i class="fa-solid fa-bullseye"></i>
+      <div id="light">
+        <h3>Our Mission</h3>
+        <p>Make mentorship accessible to everyone by connecting learners with skilled professionals worldwide.</p>
+      </div>
+    </div>
+    <div id="grid">
+      <i class="fa-solid fa-users"></i>
+      <div id="light">
+        <h3>Who We Are</h3>
+        <p>A team of developers and educators building tools that remove barriers to learning and career growth.</p>
+      </div>
+    </div>
+    <div id="grid">
+      <i class="fa-solid fa-rocket"></i>
+      <div id="light">
+        <h3>Our Vision</h3>
+        <p>A world where anyone can learn, connect, and grow their career — regardless of location or background.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>MENTORLINK</h3>
+        <p>Learn. Connect. Build. Earn. Grow.</p>
+        <p>Helping students connect with mentors and opportunities.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <a href="Landing.html"><i class="fas fa-home"></i> Home</a>
+        <a href="MentorPage.html"><i class="fas fa-user"></i> Mentors</a>
+        <a href="About.html"><i class="fa-solid fa-circle-info"></i> About Us</a>
+        <a href="LogIn.html"><i class="fas fa-sign-in-alt"></i> Login</a>
+      </div>
+      <div class="footer-section">
+        <h4>Contact Us</h4>
+        <p><i class="fas fa-envelope"></i> mentorlink@gmail.com</p>
+        <p><i class="fas fa-phone"></i> +237 675541935</p>
+        <div class="socials">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#"><i class="fab fa-telegram"></i></a>
+          <a href="#"><i class="fab fa-github"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2026 MentorLink. All rights reserved.</p></div>
+  </footer>
+</body>
+</html>

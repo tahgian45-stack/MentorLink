@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up — MentorLink</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Firebase Core + Auth + DB SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="mentorlink.js"></script>
+
+  <style>
+  @keyframes sk-pulse { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+</style>
+</head>
+<body>
+  <div id="sk-overlay-signup" style="position:fixed;inset:0;z-index:9998;background:#f1f5f9;display:flex;align-items:center;justify-content:center;gap:2rem;flex-wrap:wrap;padding:2rem">
+  <div style="width:240px;display:flex;flex-direction:column;gap:.6rem">
+    <div style="height:24px;width:80%;background:#e2e8f0;border-radius:6px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+    <div style="height:14px;width:100%;background:#d1d5db;border-radius:6px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+    <div style="height:14px;width:90%;background:#d1d5db;border-radius:6px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+  </div>
+  <div style="display:flex;gap:.6rem">
+    <div style="width:140px;height:140px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+    <div style="width:140px;height:140px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+    <div style="width:140px;height:140px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+  </div>
+</div>
+  <nav>
+    <a href="dashboard-1.html">Dashboard</a>
+    <a href="Account.html">Account</a>
+    <a href="AdminPanel.html">Admin</a>
+    <a href="Landing.html">Home</a>
+    <span class="logout" style="cursor:pointer;">Logout</span>
+  </nav>
+
+  <div class="container">
+    <!-- LEFT -->
+    <div class="left-section">
+      <h1>Create your <br>MentorLink <br>account</h1>
+      <p>Join as a student, mentor<br>or organization.</p>
+      <img src="OFYNE8601.JPG" alt="MentorLink" />
+    </div>
+
+    <!-- RIGHT — sign-up form -->
+    <div class="right-section">
+      <h2>Register as</h2>
+
+      <div class="role-buttons">
+        <button class="active" id="role-student" onclick="setRole(this)">Student</button>
+        <button id="role-mentor"    onclick="setRole(this)">Mentor</button>
+        <button id="role-org"       onclick="setRole(this)">Organization</button>
+      </div>
+
+      <form id="register-form">
+        <label for="reg-name">Full Name</label>
+        <input type="text"  id="reg-name"  placeholder="Enter your full name" required>
+
+        <label for="reg-email">Email</label>
+        <input type="email" id="reg-email" placeholder="Enter your email" required>
+
+        <label for="reg-phone">Phone Number</label>
+        <input type="tel"   id="reg-phone" placeholder="Enter your phone number" required>
+
+        <label for="reg-pass">Password</label>
+        <input type="password" id="reg-pass" placeholder="Create a password" required minlength="6">
+
+        <label for="reg-confirm">Confirm Password</label>
+        <input type="password" id="reg-confirm" placeholder="Confirm your password" required>
+
+        <!-- Mentor-only fields -->
+        <div id="mentor-fields" style="display:none">
+          <label for="reg-skill">Main Skill / Area</label>
+          <input type="text" id="reg-skill" placeholder="e.g. Web Development, Data Science">
+
+          <label for="reg-role-title">Professional Title</label>
+          <input type="text" id="reg-role-title" placeholder="e.g. Full Stack Developer">
+          <br>
+          <label for="reg-rate">Hourly Rate (XAF)</label>
+          <input type="number" id="reg-rate" placeholder="e.g. 10000" min="0">
+        </div>
+
+        <div class="checkbox">
+          <input type="checkbox" id="terms" required>
+          <label for="terms">I agree to the
+            <a href="#">Terms &amp; Conditions</a> and
+            <a href="#">Privacy Policy</a>
+          </label>
+        </div>
+
+        <button type="submit" class="create-btn">Create Account</button>
+
+        <p class="login-text">Already have an account?
+          <a href="LogIn.html">Log in</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ── Role toggle ──
+    function setRole(btn) {
+      document.querySelectorAll('.role-buttons button').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      var mentorFields = document.getElementById('mentor-fields');
+      if (btn.id === 'role-mentor') {
+        mentorFields.style.display = 'block';
+      } else {
+        mentorFields.style.display = 'none';
+      }
+    }
+  </script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var s = document.getElementById('sk-overlay-signup');
+    if(s) s.remove();
+  });
+</script>
+</body>
+</html>
