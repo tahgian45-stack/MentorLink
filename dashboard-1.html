@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MentorLink | Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="dashboard-1.html">
   <link rel="stylesheet" href="fontawesome/css/all.min.css">
 
   <!-- Firebase SDK (load BEFORE mentorlink.js) -->
@@ -26,9 +26,9 @@
       <input class="search" type="text" placeholder="Search Everything"><i class="fa fa-search sicon"></i>
       <i class="fa-regular fa-bell bell"></i>
       <div class="profile">
-        <span class="profileicon" id="dash-profile-initial">R</span>
+        <span class="profileicon" id="dash-profile-initial">U</span>
         <div class="text">
-          <p id="dash-profile-name">Rosch</p>
+          <p id="dash-profile-name">User</p>
           <p id="dash-profile-role">Mentor</p>
         </div>
         <i class="fa fa-angle-down drop-down"></i>
@@ -60,7 +60,7 @@
       <div class="vnavbtns">
         <a href="dashboard-1.html"><i class="fa fa-table-columns vicon"></i>Dashboard</a>
         <a href="MentorPage.html"><i class="fa fa-chalkboard-user vicon"></i>Mentorship</a>
-        <a href="Projects.html"><i class="fa-solid fa-folder-open vicon"></i>Projects</a>
+        <a href="Projects.html"><i class="fa-solid fa-folder-open vicon"></i>Projects</a>F
         <a href="Students.html"><i class="fa-solid fa-graduation-cap vicon"></i>Students</a>
         <a href=""><i class="fa-solid fa-book-open-reader vicon"></i>Learning</a>
         <a href="payment-page.html"><i class="fa-solid fa-wallet vicon"></i>Payments</a>
@@ -145,10 +145,10 @@
     <!-- Upcoming session -->
     <div class="container3">
       <p class="h2">Upcoming Sessions</p>
-      <div class="span"><p>R</p></div>
+      <div class="span"><p>U</p></div>
       <div class="names">
         <p class="h2">Cyber Security Fundamentals</p>
-        <p id="next-mentor-name">Rosch Ebori</p>
+        <p id="next-mentor-name">User</p>
         <h3 id="dash-next-session">24 May 2026 &mdash; 2:30pm</h3>
       </div>
       <button class="btn">Apply Now</button>
@@ -160,8 +160,7 @@
       var s = document.getElementById('sk-overlay-dashboard');
       if(s) s.remove();
     }
-    // coordinator will add this one-liner to mentorlink.js's dashboard section
-    // which will call removeDashSkel() once data arrives
+   
   </script>
 </body>
 </html>
