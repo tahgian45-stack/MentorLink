@@ -19,6 +19,9 @@
 </head>
 <body>
   <header>
+    <button class="sidebar-toggle" id="sidebar-toggle">
+      <i class="fa fa-bars"></i>
+    </button>
     <nav>
       <input class="search" type="text" placeholder="Search Everything"><i class="fa fa-search sicon"></i>
       <i class="fa-regular fa-bell bell"></i>
@@ -32,18 +35,22 @@
       </div>
     </nav>
   </header>
+
+  <!-- Skeleton Loading Overlay -->
+  <div id="sk-overlay-dashboard" style="position:fixed;inset:0;z-index:9998;background:#f1f5f9;display:flex;flex-direction:column;gap:1.5rem;padding:4rem 2rem">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;max-width:900px;margin:0 auto">
+      <div style="height:180px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+      <div style="height:180px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+      <div style="height:180px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+      <div style="height:180px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:1rem;max-width:900px;margin:0 auto;width:100%">
+      <div style="height:220px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+      <div style="height:220px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+    </div>
+  </div>
+
   <main>
-    <div id="sk-overlay-dashboard" style="position:fixed;inset:0;z-index:9998;background:#f1f5f9;display:flex;flex-direction:column;gap:1.5rem;padding:4rem 2rem">
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;max-width:900px;margin:0 auto">
-        <div style="height:180px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-        <div style="height:180px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-        <div style="height:180px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-        <div style="height:180px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-      </div>
-      <div style="display:grid;grid-template-columns:2fr 1fr;gap:1rem;max-width:900px;margin:0 auto;width:100%">
-        <div style="height:220px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-        <div style="height:220px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-      </div>
     </div>
     <div class="vertical-nav">
       <div class="mlogo">
@@ -53,7 +60,7 @@
       <div class="vnavbtns">
         <a href="dashboard-1.html"><i class="fa fa-table-columns vicon"></i>Dashboard</a>
         <a href="MentorPage.html"><i class="fa fa-chalkboard-user vicon"></i>Mentorship</a>
-        <a href="Projects.html"><i class="fa-solid fa-folder-open vicon"></i>Projects</a
+        <a href="Projects.html"><i class="fa-solid fa-folder-open vicon"></i>Projects</a>
         <a href="Students.html"><i class="fa-solid fa-graduation-cap vicon"></i>Students</a>
         <a href=""><i class="fa-solid fa-book-open-reader vicon"></i>Learning</a>
         <a href="payment-page.html"><i class="fa-solid fa-wallet vicon"></i>Payments</a>

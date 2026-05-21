@@ -16,8 +16,12 @@
     <link rel="stylesheet" href="Landing.css" />
     <style>
       @keyframes sk-pulse {
-        0%   { background-position: 200% 0; }
-        100% { background-position: -200% 0; }
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
       }
     </style>
 
@@ -36,30 +40,89 @@
         <div id="first">
           <h3><img src="log.png" alt="logo" /> MENTOR<span>LINK</span></h3>
         </div>
-      <div id="second">
-        <a href="Landing.html">Home</a>
-        <a href="MentorPage.html">Mentors</a>
-        <a href="dashboard-1.html">Dashboard</a>
-        <a href="Account.html">Account</a>
-        <a href="AdminPanel.html">Admin</a>
-        <a href="#">Projects</a>
-        <a href="#">Organizations</a>
-        <a href="About.html" style="color:#4f46e5;font-weight:600">About</a>
-        <a href="LogIn.html" id="Login">Log In</a>
-        <button id="sign" onclick="window.location.href='signupgageGE.html'">Sign Up</button>
-      </div>
+        <div id="second">
+          <a href="Landing.html">Home</a>
+          <a href="MentorPage.html">Mentors</a>
+          <a href="dashboard-1.html">Dashboard</a>
+          <a href="Account.html">Account</a>
+          <a href="AdminPanel.html">Admin</a>
+          <a href="#">Projects</a>
+          <a href="#">Organizations</a>
+          <a href="About.html" style="color: #4f46e5; font-weight: 600"
+            >About</a
+          >
+          <a href="LogIn.html" id="Login">Log In</a>
+          <button
+            id="sign"
+            onclick="window.location.href = 'signupgageGE.html'"
+          >
+            Sign Up
+          </button>
+        </div>
       </navbar>
     </header>
 
-    <div id="sk-overlay-landing" style="position:fixed;inset:0;z-index:9998;background:#f1f5f9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem">
-      <div style="font-size:1.6rem;font-weight:800;color:#1e293b"><i class="fa fa-handshake" style="color:#4f46e5;font-size:2rem;vertical-align:middle"></i> MentorLink</div>
-      <div style="font-size:.9rem;color:#64748b">Loading…</div>
-      <div style="display:flex;flex-direction:column;gap:1rem;width:320px">
-        <div style="height:160px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-        <div style="display:flex;gap:.75rem">
-          <div style="flex:1;height:120px;background:#e2e8f0;border-radius:12px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-          <div style="flex:1;height:120px;background:#e2e8f0;border-radius:12px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-          <div style="flex:1;height:120px;background:#e2e8f0;border-radius:12px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+    <div
+      id="sk-overlay-landing"
+      style="
+        position: fixed;
+        inset: 0;
+        z-index: 9998;
+        background: #f1f5f9;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+      "
+    >
+      <div style="font-size: 1.6rem; font-weight: 800; color: #1e293b">
+        <i
+          class="fa fa-handshake"
+          style="color: #4f46e5; font-size: 2rem; vertical-align: middle"
+        ></i>
+        MentorLink
+      </div>
+      <div style="font-size: 0.9rem; color: #64748b">Loading…</div>
+      <div
+        style="display: flex; flex-direction: column; gap: 1rem; width: 320px"
+      >
+        <div
+          style="
+            height: 160px;
+            background: #e2e8f0;
+            border-radius: 16px;
+            animation: sk-pulse 1.4s ease-in-out infinite;
+          "
+        ></div>
+        <div style="display: flex; gap: 0.75rem">
+          <div
+            style="
+              flex: 1;
+              height: 120px;
+              background: #e2e8f0;
+              border-radius: 12px;
+              animation: sk-pulse 1.4s ease-in-out infinite;
+            "
+          ></div>
+          <div
+            style="
+              flex: 1;
+              height: 120px;
+              background: #e2e8f0;
+              border-radius: 12px;
+              animation: sk-pulse 1.4s ease-in-out infinite;
+            "
+          ></div>
+          <div
+            style="
+              flex: 1;
+              height: 120px;
+              background: #e2e8f0;
+              border-radius: 12px;
+              animation: sk-pulse 1.4s ease-in-out infinite;
+            "
+          ></div>
         </div>
       </div>
     </div>
@@ -160,11 +223,25 @@
       </div>
     </footer>
     <script>
-      document.addEventListener('DOMContentLoaded', function () {
+      document.addEventListener("DOMContentLoaded", function () {
         // static landing page — hide skeleton immediately
-        var s = document.getElementById('sk-overlay-landing');
+        var s = document.getElementById("sk-overlay-landing");
         if (s) s.remove();
       });
     </script>
+    <script type="text/javascript">
+      var Tawk_API = Tawk_API || {},
+        Tawk_LoadStart = new Date();
+      (function () {
+        var s1 = document.createElement("script"),
+          s0 = document.getElementsByTagName("script")[0];
+        s1.async = true;
+        s1.src = "https://embed.tawk.to/69e2c95da7ff261c327a9c4c/1jmeu55bc";
+        s1.charset = "UTF-8";
+        s1.setAttribute("crossorigin", "*");
+        s0.parentNode.insertBefore(s1, s0);
+      })();
+    </script>
+    <!--End of Tawk.to Script-->
   </body>
 </html>

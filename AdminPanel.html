@@ -5,42 +5,349 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Panel | MentorLink</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="fontawesome/css/all.min.css" />
 
-  <!-- Firebase v9 compat (load before app JS) -->
+  <!-- Firebase v9 compat -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-  <!-- App JS (after Firebase) -->
-  <script src="mentorlink.js"></script>
+  <style>
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .stat-card i {
+      font-size: 2rem;
+      color: #4f46e5;
+      margin-bottom: 0.5rem;
+    }
+    .stat-card h3 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    .stat-card p {
+      color: #64748b;
+      margin-top: 0.25rem;
+    }
+    .user-list, .mentor-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .user-item, .mentor-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .user-item:hover, .mentor-item:hover {
+      background: #f8fafc;
+    }
+    .user-avatar, .mentor-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+    .user-info, .mentor-info {
+      flex: 1;
+    }
+    .user-info h4, .mentor-info h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    .user-info p, .mentor-info p {
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+    .delete-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 0.25rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.75rem;
+    }
+    .delete-btn:hover {
+      background: #dc2626;
+    }
+    .tab-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .tab-btn {
+      padding: 0.5rem 1.5rem;
+      border: none;
+      background: #e2e8f0;
+      cursor: pointer;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+    .tab-btn.active {
+      background: #4f46e5;
+      color: white;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    @keyframes sk-pulse {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Admin Panel</h1>
+  <header style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem;">
+    <h1><i class="fa fa-user-shield"></i> Admin Panel</h1>
     <nav>
       <a href="dashboard-1.html">Dashboard</a>
       <a href="MentorPage.html">Mentors</a>
       <a href="Account.html">Account</a>
       <a href="Landing.html">Home</a>
-      <span class="logout" style="cursor:pointer">Logout</span>
+      <span class="logout" id="admin-logout" style="cursor:pointer; color:#ef4444;">Logout</span>
     </nav>
   </header>
-  <main>
-    <section>
-      <h2>Users</h2>
-      <div id="admin-users-list">Loading users...</div>
-    </section>
-    <section>
-      <h2>Mentors</h2>
-      <div id="admin-mentors-list">Loading mentors...</div>
-    </section>
-    <section>
-      <h2>Payments</h2>
-      <button onclick="payWithFapshi()">Open Fapshi Payment Link ↗</button>
-      <p style="margin-top:0.5rem;font-size:0.85rem;color:#64748b">
-        Directs to <code>pay.fapshi.com/18869134</code>
-      </p>
-    </section>
+
+  <!-- Skeleton Loading Overlay -->
+  <div id="sk-overlay-admin" style="position:fixed;inset:0;z-index:9998;background:#f1f5f9;display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-direction:column;">
+    <div style="font-size:1.3rem;font-weight:800;color:#1e293b"><i class="fa fa-spinner fa-spin"></i> Loading Admin Panel...</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;width:90%;max-width:1000px">
+      <div class="sk-card" style="height:100px;background:#e2e8f0;border-radius:12px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+      <div class="sk-card" style="height:100px;background:#e2e8f0;border-radius:12px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+      <div class="sk-card" style="height:100px;background:#e2e8f0;border-radius:12px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+    </div>
+  </div>
+
+  <main style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+    <!-- Stats Cards -->
+    <div class="admin-stats">
+      <div class="stat-card">
+        <i class="fa fa-users"></i>
+        <h3 id="total-users">0</h3>
+        <p>Total Users</p>
+      </div>
+      <div class="stat-card">
+        <i class="fa fa-chalkboard-user"></i>
+        <h3 id="total-mentors">0</h3>
+        <p>Total Mentors</p>
+      </div>
+      <div class="stat-card">
+        <i class="fa fa-folder-open"></i>
+        <h3 id="total-projects">0</h3>
+        <p>Total Projects</p>
+      </div>
+      <div class="stat-card">
+        <i class="fa fa-graduation-cap"></i>
+        <h3 id="total-students">0</h3>
+        <p>Total Students</p>
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-buttons">
+      <button class="tab-btn active" data-tab="users">Users</button>
+      <button class="tab-btn" data-tab="mentors">Mentors</button>
+      <button class="tab-btn" data-tab="projects">Projects</button>
+      <button class="tab-btn" data-tab="payments">Payments</button>
+    </div>
+
+    <!-- Users Tab -->
+    <div id="users-tab" class="tab-content active">
+      <section style="background:white; border-radius:12px; padding:1.5rem;">
+        <h2><i class="fa fa-users"></i> All Users</h2>
+        <div id="admin-users-list" class="user-list">Loading users...</div>
+      </section>
+    </div>
+
+    <!-- Mentors Tab -->
+    <div id="mentors-tab" class="tab-content">
+      <section style="background:white; border-radius:12px; padding:1.5rem;">
+        <h2><i class="fa fa-chalkboard-user"></i> All Mentors</h2>
+        <div id="admin-mentors-list" class="mentor-list">Loading mentors...</div>
+      </section>
+    </div>
+
+    <!-- Projects Tab -->
+    <div id="projects-tab" class="tab-content">
+      <section style="background:white; border-radius:12px; padding:1.5rem;">
+        <h2><i class="fa fa-folder-open"></i> All Projects</h2>
+        <div id="admin-projects-list">Loading projects...</div>
+      </section>
+    </div>
+
+    <!-- Payments Tab -->
+    <div id="payments-tab" class="tab-content">
+      <section style="background:white; border-radius:12px; padding:1.5rem;">
+        <h2><i class="fa fa-wallet"></i> Payments</h2>
+        <button onclick="window.open('https://pay.fapshi.com/18869134', '_blank')" style="background:#4f46e5; color:white; border:none; padding:0.75rem 1.5rem; border-radius:8px; cursor:pointer;">
+          <i class="fa fa-credit-card"></i> Open Fapshi Payment Link
+        </button>
+        <div id="admin-payments-list" style="margin-top:1rem;"></div>
+      </section>
+    </div>
   </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check admin authentication
+      if (typeof firebase !== 'undefined') {
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (!user) {
+            window.location.href = 'LogIn.html';
+            return;
+          }
+          loadAdminData();
+        });
+      }
+      
+      // Tab switching
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const tabId = this.getAttribute('data-tab');
+          tabBtns.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          
+          document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+          });
+          document.getElementById(`${tabId}-tab`).classList.add('active');
+        });
+      });
+      
+      // Logout
+      const logoutBtn = document.getElementById('admin-logout');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', function() {
+          firebase.auth().signOut().then(() => {
+            window.location.href = 'LogIn.html';
+          });
+        });
+      }
+    });
+    
+    async function loadAdminData() {
+      try {
+        // Load users
+        const usersSnap = await firebase.database().ref('users').once('value');
+        const users = usersSnap.val() || {};
+        const totalUsers = Object.keys(users).length;
+        document.getElementById('total-users').textContent = totalUsers;
+        
+        // Render users list
+        const usersList = document.getElementById('admin-users-list');
+        if (usersList) {
+          usersList.innerHTML = '';
+          Object.entries(users).forEach(([uid, userData]) => {
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-item';
+            userDiv.innerHTML = `
+              <div class="user-avatar">${(userData.name || 'U').charAt(0).toUpperCase()}</div>
+              <div class="user-info">
+                <h4>${userData.name || 'Anonymous'}</h4>
+                <p>${userData.email || 'No email'} • ${userData.role || 'student'}</p>
+              </div>
+              <button class="delete-btn" data-uid="${uid}" data-type="user">Delete</button>
+            `;
+            usersList.appendChild(userDiv);
+          });
+        }
+        
+        // Load mentors
+        const mentorsSnap = await firebase.database().ref('mentors').once('value');
+        const mentors = mentorsSnap.val() || {};
+        const totalMentors = Object.keys(mentors).length;
+        document.getElementById('total-mentors').textContent = totalMentors;
+        
+        // Render mentors list
+        const mentorsList = document.getElementById('admin-mentors-list');
+        if (mentorsList) {
+          mentorsList.innerHTML = '';
+          Object.entries(mentors).forEach(([key, mentor]) => {
+            const mentorDiv = document.createElement('div');
+            mentorDiv.className = 'mentor-item';
+            mentorDiv.innerHTML = `
+              <div class="mentor-avatar">${(mentor.name || 'M').charAt(0).toUpperCase()}</div>
+              <div class="mentor-info">
+                <h4>${mentor.name || 'Mentor'}</h4>
+                <p>${mentor.skill || 'Various'} • ${mentor.price || 'Contact for rates'}</p>
+              </div>
+              <button class="delete-btn" data-key="${key}" data-type="mentor">Delete</button>
+            `;
+            mentorsList.appendChild(mentorDiv);
+          });
+        }
+        
+        // Load projects
+        const projectsSnap = await firebase.database().ref('projects').once('value');
+        const projects = projectsSnap.val() || {};
+        document.getElementById('total-projects').textContent = Object.keys(projects).length;
+        
+        const projectsList = document.getElementById('admin-projects-list');
+        if (projectsList) {
+          projectsList.innerHTML = '';
+          Object.entries(projects).forEach(([key, project]) => {
+            const projectDiv = document.createElement('div');
+            projectDiv.className = 'user-item';
+            projectDiv.innerHTML = `
+              <div class="user-info" style="flex:1">
+                <h4>${project.title || 'Untitled Project'}</h4>
+                <p>${project.description?.substring(0, 100) || 'No description'} • Budget: ${project.budget || 'N/A'}</p>
+              </div>
+              <button class="delete-btn" data-key="${key}" data-type="project">Delete</button>
+            `;
+            projectsList.appendChild(projectDiv);
+          });
+        }
+        
+        // Load students count
+        const studentsSnap = await firebase.database().ref('students').once('value');
+        document.getElementById('total-students').textContent = Object.keys(studentsSnap.val() || {}).length;
+        
+        // Add delete handlers
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+          btn.addEventListener('click', async function() {
+            const key = this.getAttribute('data-key');
+            const type = this.getAttribute('data-type');
+            if (confirm(`Delete this ${type}?`)) {
+              await firebase.database().ref(`${type}s/${key}`).remove();
+              location.reload();
+            }
+          });
+        });
+        
+        // Remove skeleton
+        const skeleton = document.getElementById('sk-overlay-admin');
+        if (skeleton) skeleton.remove();
+        
+      } catch (error) {
+        console.error('Error loading admin data:', error);
+        const skeleton = document.getElementById('sk-overlay-admin');
+        if (skeleton) skeleton.remove();
+      }
+    }
+  </script>
 </body>
 </html>

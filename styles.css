@@ -1,7 +1,4 @@
-/* ============================================================
-   MentorLink – MentorPage (MentorPage.html)
-   Mentor listing / search / filter styles
-   ============================================================ */
+
 
 *,
 *::before,
@@ -24,14 +21,20 @@
 }
 
 body {
-  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, sans-serif;
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
   background-color: var(--surface-alt);
   color: var(--text);
   min-height: 100vh;
 }
 
-/* ── NAV ── */
+
 nav {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
@@ -52,7 +55,9 @@ nav a {
   font-size: 0.9rem;
   padding: 0.4rem 0.75rem;
   border-radius: 6px;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
   white-space: nowrap;
 }
 
@@ -75,7 +80,7 @@ nav .logout:hover {
   background: #fef2f2;
 }
 
-/* ── PAGE HEADER ── */
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -100,7 +105,9 @@ nav .logout:hover {
   font-family: inherit;
   outline: none;
   background: var(--surface);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .top-bar input[type="text"]:focus {
@@ -131,7 +138,7 @@ h1 {
   color: var(--text);
 }
 
-/* ── MENTOR CARDS ── */
+
 .mentors {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -139,7 +146,7 @@ h1 {
   padding-bottom: 3rem;
 }
 
-/* ── SINGLE MENTOR CARD ── */
+
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -150,7 +157,10 @@ h1 {
   align-items: center;
   text-align: center;
   gap: 0.4rem;
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s,
+    border-color 0.2s;
   position: relative;
   overflow: hidden;
 }
@@ -241,7 +251,9 @@ h1 {
   font-family: inherit;
   background: var(--primary);
   color: #fff;
-  transition: background 0.15s, transform 0.1s;
+  transition:
+    background 0.15s,
+    transform 0.1s;
 }
 
 .card button:hover,
@@ -254,7 +266,7 @@ h1 {
   transform: scale(0.97);
 }
 
-/* ── MENTOR MODAL ── */
+
 #mentor-modal {
   position: fixed;
   inset: 0;
@@ -267,8 +279,12 @@ h1 {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 #mentor-modal > div {
@@ -283,17 +299,23 @@ h1 {
 }
 
 @keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
-/* ── EMPTY STATE ── */
+
 .mentors .card[style*="display:none"],
 .mentors .card.hidden {
   display: none;
 }
 
-/* ── RESPONSIVE ── */
+
 @media (max-width: 768px) {
   nav {
     flex-wrap: wrap;
@@ -318,14 +340,117 @@ h1 {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 1rem;
   }
-}
-
-@media (max-width: 480px) {
-  .mentors {
-    grid-template-columns: 1fr;
-  }
 
   .top-bar {
     flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .top-bar input[type="text"],
+  .top-bar select {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  nav {
+    padding: 0.5rem 0.75rem;
+  }
+
+  nav a {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.4rem;
+  }
+
+  .container {
+    padding: 1rem 0.5rem;
+  }
+
+  h1 {
+    font-size: 1.1rem;
+  }
+
+  .mentors {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .card {
+    padding: 1.25rem;
+    border-radius: 12px;
+  }
+
+  .card h3 {
+    font-size: 1rem;
+  }
+
+  .card .role {
+    font-size: 0.8rem;
+  }
+
+  .card .price {
+    font-size: 0.85rem;
+  }
+
+  .card button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .top-bar {
+    gap: 0.5rem;
+  }
+
+  .top-bar input[type="text"],
+  .top-bar select {
+    height: 40px;
+    font-size: 0.9rem;
+  }
+
+  #mentor-modal > div {
+    padding: 1.5rem;
+    max-width: 90vw;
+  }
+}
+
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(10px, 10px);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+    margin-left: auto;
+  }
+
+  nav {
+    position: relative;
   }
 }

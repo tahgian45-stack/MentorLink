@@ -7,81 +7,122 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="fontawesome/css/all.min.css">
 
-  <!-- Firebase SDK (load before app JS) -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
-  <script src="mentorlink.js"></script>
+  
   <style>
     @keyframes sk-pulse { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #1e293b;
+      margin-right: 1rem;
+      display: none;
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar-toggle {
+        display: block;
+      }
+      .vertical-nav {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+      .vertical-nav.active {
+        transform: translateX(0);
+      }
+    }
+    
+    .wave-hand {
+      display: inline-block;
+      animation: wave 1s ease-in-out infinite;
+    }
+    
+    @keyframes wave {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(15deg); }
+      75% { transform: rotate(-10deg); }
+    }
   </style>
 </head>
 <body>
   <header>
-    <nav>
-      <input class="search" type="text" placeholder="Search Everything"><i class="fa fa-search sicon"></i>
-      <i class="fa-regular fa-bell bell"></i>
-      <div class="profile">
-        <span class="profileicon" id="dash-profile-initial">R</span>
+    <button class="sidebar-toggle" id="sidebar-toggle">
+      <i class="fa fa-bars"></i>
+    </button>
+    <nav style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <input class="search" type="text" placeholder="Search Everything" id="global-search">
+        <i class="fa fa-search sicon" style="margin-left: -35px;"></i>
+      </div>
+      <i class="fa-regular fa-bell bell" style="cursor: pointer;"></i>
+      <div class="profile" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+        <span class="profileicon" id="dash-profile-initial">U</span>
         <div class="text">
-          <p id="dash-profile-name">Rosch</p>
-          <p id="dash-profile-role">Mentor</p>
+          <p id="dash-profile-name" style="font-weight: 600;">Loading...</p>
+          <p id="dash-profile-role" style="font-size: 0.75rem; color: #64748b;">Member</p>
         </div>
         <i class="fa fa-angle-down drop-down"></i>
       </div>
     </nav>
   </header>
-  <main>
-    <div id="sk-overlay-dashboard" style="position:fixed;inset:0;z-index:9998;background:#f1f5f9;display:flex;flex-direction:column;gap:1.5rem;padding:4rem 2rem">
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;max-width:900px;margin:0 auto">
-        <div style="height:180px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-        <div style="height:180px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-        <div style="height:180px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-        <div style="height:180px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-      </div>
-      <div style="display:grid;grid-template-columns:2fr 1fr;gap:1rem;max-width:900px;margin:0 auto;width:100%">
-        <div style="height:220px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-        <div style="height:220px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-      </div>
+
+  <!-- Skeleton Loading Overlay -->
+  <div id="sk-overlay-dashboard" style="position:fixed;inset:0;z-index:9998;background:#f1f5f9;display:flex;flex-direction:column;gap:1.5rem;padding:4rem 2rem">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;max-width:900px;margin:0 auto">
+      <div style="height:180px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+      <div style="height:180px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+      <div style="height:180px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+      <div style="height:180px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
     </div>
-    <div class="vertical-nav">
+  </div>
+
+  <main>
+    <div class="vertical-nav" id="vertical-nav">
       <div class="mlogo">
         <i class="fa fa-handshake logo"></i>
         <p class="Name">MentorLINK</p>
       </div>
       <div class="vnavbtns">
-        <a href="dashboard-1.html"><i class="fa fa-table-columns vicon"></i>Dashboard</a>
+        <a href="dashboard-1.html" class="active"><i class="fa fa-table-columns vicon"></i>Dashboard</a>
         <a href="MentorPage.html"><i class="fa fa-chalkboard-user vicon"></i>Mentorship</a>
         <a href="Projects.html"><i class="fa-solid fa-folder-open vicon"></i>Projects</a>
         <a href="Students.html"><i class="fa-solid fa-graduation-cap vicon"></i>Students</a>
-        <a href=""><i class="fa-solid fa-book-open-reader vicon"></i>Learning</a>
+        <a href="#"><i class="fa-solid fa-book-open-reader vicon"></i>Learning</a>
         <a href="payment-page.html"><i class="fa-solid fa-wallet vicon"></i>Payments</a>
-        <a href=""><i class="fa-solid fa-envelope vicon"></i>Notifications<span class="count-badge">0</span></a>
+        <a href="#"><i class="fa-solid fa-envelope vicon"></i>Notifications<span class="count-badge">0</span></a>
         <a href="Account.html"><i class="fa-solid fa-user-circle vicon"></i>Account</a>
         <a href="AdminPanel.html"><i class="fa-solid fa-user-shield vicon"></i>Admin</a>
       </div>
-      <span class="logout" id="dash-logout">
+      <span class="logout" id="dash-logout" style="cursor: pointer;">
         <i class="fa-solid fa-right-from-bracket vicon"></i><strong>Logout</strong>
       </span>
     </div>
 
     <div class="main">
-      <h1 id="dash-welcome">Welcome back, User</h1>
+      <h1 id="dash-welcome">Welcome back, <span id="user-name-display">User</span></h1>
       <p style="color:#153255">Let's Continue Your Learning Journey
-        <i style="color:#153255" class="fa-regular fa-hand wave"></i>
+        <i class="fa-regular fa-hand wave-hand"></i>
       </p>
     </div>
 
+    <!-- Quick stats cards -->
     <div class="container">
       <div id="card1" class="card">
         <h2 id="dash-projects-pct">0%</h2>
         <p>Project Completed</p>
-        <progress id="fprogress" value="10" max="100"></progress>
+        <progress id="fprogress" value="0" max="100"></progress>
       </div>
 
       <div id="card2" class="card">
         <i class="fa-solid fa-diagram-project cp"></i>
+        <h2 id="active-projects-count">0</h2>
         <p>Active Projects</p>
       </div>
 
@@ -96,33 +137,32 @@
       </div>
     </div>
 
+    <!-- Progress + recommended -->
     <div class="container2">
       <div id="card11" class="card1">
         <h3>Your progress</h3>
         <p>Full stack Development path</p>
-        <progress id="your-progress" value="65" max="100"></progress>
+        <progress id="your-progress" value="0" max="100"></progress>
         <div class="tech-icons">
-          <label class="checkb"><input type="checkbox"><span><i class="fa-brands fa-html5"></i>HTML5 &amp; CSS</span></label>
-          <label class="checkb"><input type="checkbox"><span><i class="fa-brands fa-js"></i>JavaScript basics</span></label>
-          <label class="checkb"><input type="checkbox"><span><i class="fa-brands fa-php"></i>PHP</span></label>
-          <label class="checkb"><input type="checkbox"><i class="fa-brands fa-github"></i><span>GitHub</span></label>
-          <label class="checkb"><input type="checkbox"><i class="fa-brands fa-python"></i><span>Python</span></label>
+          <label class="checkb"><input type="checkbox" data-skill="html"><span><i class="fa-brands fa-html5"></i>HTML5 &amp; CSS</span></label>
+          <label class="checkb"><input type="checkbox" data-skill="js"><span><i class="fa-brands fa-js"></i>JavaScript basics</span></label>
+          <label class="checkb"><input type="checkbox" data-skill="php"><span><i class="fa-brands fa-php"></i>PHP</span></label>
+          <label class="checkb"><input type="checkbox" data-skill="github"><span><i class="fa-brands fa-github"></i>GitHub</span></label>
+          <label class="checkb"><input type="checkbox" data-skill="python"><span><i class="fa-brands fa-python"></i>Python</span></label>
         </div>
       </div>
 
       <div id="card12" class="card1">
-        <h3>Recommended For You &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <span style="color:#4f46e5;cursor:pointer">view All</span>
-        </h3>
+        <h3>Recommended For You <span style="color:#4f46e5;cursor:pointer;float:right" id="view-all-link">View All</span></h3>
         <div class="icon-boxes">
           <div class="avatar a1"><i class="fa fa-book-open"></i></div>
           <div class="avatar a2"><i class="fa fa-lightbulb"></i></div>
           <div class="avatar a3"><i class="fa fa-laptop-code"></i></div>
         </div>
         <div class="action">
-          <div class="actions"><h4>Free Online Courses On Ethical Hacking</h4><p>Learn Basic Ethical hacking For No cost and Build Your<br>Security</p></div>
-          <div class="actions"><h4>Networking and Security</h4><p>Do not just build your social network, Build another in<br>Tech</p></div>
-          <div class="actions"><h4>Node.js &amp; Express Courses</h4><p>Learn Backend in the easiest way ever with gamified<br>learning strategies</p></div>
+          <div class="actions"><h4>Free Online Courses On Ethical Hacking</h4><p>Learn Basic Ethical hacking For No cost and Build Your Security</p></div>
+          <div class="actions"><h4>Networking and Security</h4><p>Do not just build your social network, Build another in Tech</p></div>
+          <div class="actions"><h4>Node.js &amp; Express Courses</h4><p>Learn Backend in the easiest way ever with gamified learning strategies</p></div>
         </div>
         <div class="ratings">
           <div class="rating"><i class="fa fa-star"></i><span>4.6</span></div>
@@ -132,25 +172,189 @@
       </div>
     </div>
 
+    <!-- Upcoming session -->
     <div class="container3">
       <p class="h2">Upcoming Sessions</p>
-      <div class="span"><p>R</p></div>
+      <div class="span"><p id="session-initial">R</p></div>
       <div class="names">
-        <p class="h2">Cyber Attacker</p>
-        <p>Rosch Ebori</p>
-        <h3 id="dash-next-session">24 May 2026 - 2:30pm</h3>
+        <p class="h2" id="session-title">Cyber Security Fundamentals</p>
+        <p id="next-mentor-name">Loading...</p>
+        <h3 id="dash-next-session">Loading session...</h3>
       </div>
-      <button class="btn">Apply Now</button>
+      <button class="btn" id="apply-session-btn">Apply Now</button>
     </div>
   </main>
-  <footer></footer>
+
   <script>
-    function removeDashSkel() {
-      var s = document.getElementById('sk-overlay-dashboard');
-      if(s) s.remove();
+    // Dashboard initialization
+    document.addEventListener('DOMContentLoaded', function() {
+      // Sidebar toggle for mobile
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const verticalNav = document.getElementById('vertical-nav');
+      
+      if (sidebarToggle && verticalNav) {
+        sidebarToggle.addEventListener('click', function() {
+          verticalNav.classList.toggle('active');
+        });
+      }
+      
+      // Check authentication
+      if (typeof firebase !== 'undefined') {
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (!user) {
+            window.location.href = 'LogIn.html';
+            return;
+          }
+          
+          // Load user data
+          loadUserDashboardData(user);
+        });
+      }
+      
+      // Logout handler
+      const logoutBtn = document.getElementById('dash-logout');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', function() {
+          if (typeof firebase !== 'undefined') {
+            firebase.auth().signOut().then(function() {
+              window.location.href = 'LogIn.html';
+            });
+          }
+        });
+      }
+      
+      // Progress checkboxes
+      const checkboxes = document.querySelectorAll('.checkb input');
+      checkboxes.forEach(cb => {
+        cb.addEventListener('change', updateProgress);
+      });
+      
+      // Apply session button
+      const applyBtn = document.getElementById('apply-session-btn');
+      if (applyBtn) {
+        applyBtn.addEventListener('click', function() {
+          window.location.href = 'MentorPage.html';
+        });
+      }
+    });
+    
+    function loadUserDashboardData(user) {
+      // Load user profile
+      firebase.database().ref('users/' + user.uid).once('value').then(function(snap) {
+        const profile = snap.val() || {};
+        const nameDisplay = document.getElementById('user-name-display');
+        const profileName = document.getElementById('dash-profile-name');
+        const profileInitial = document.getElementById('dash-profile-initial');
+        const profileRole = document.getElementById('dash-profile-role');
+        const welcomeH1 = document.getElementById('dash-welcome');
+        
+        const userName = profile.name || user.email.split('@')[0];
+        if (nameDisplay) nameDisplay.textContent = userName;
+        if (profileName) profileName.textContent = userName;
+        if (profileInitial) profileInitial.textContent = userName.charAt(0).toUpperCase();
+        if (profileRole) profileRole.textContent = profile.role || 'Member';
+        if (welcomeH1) welcomeH1.innerHTML = `Welcome back, <span>${userName}</span>`;
+        
+        // Load projects
+        loadProjectsData(user);
+        
+        // Load mentors
+        loadMentorsData();
+        
+        // Load certificates count
+        loadCertificatesCount();
+        
+        // Remove skeleton
+        removeSkeleton();
+      }).catch(err => {
+        console.error('Error loading profile:', err);
+        removeSkeleton();
+      });
     }
-    // coordinator will add this one-liner to mentorlink.js's dashboard section
-    // which will call removeDashSkel() once data arrives
+    
+    function loadProjectsData(user) {
+      firebase.database().ref('projects').once('value').then(function(snap) {
+        const projects = snap.val() || {};
+        const userProjects = Object.keys(projects).filter(key => projects[key].createdBy === user.uid);
+        const projectCount = userProjects.length;
+        const pct = Math.min(100, projectCount * 20);
+        
+        const pctEl = document.getElementById('dash-projects-pct');
+        const progressBar = document.getElementById('fprogress');
+        const activeCount = document.getElementById('active-projects-count');
+        
+        if (pctEl) pctEl.textContent = pct + '%';
+        if (progressBar) progressBar.value = pct;
+        if (activeCount) activeCount.textContent = projectCount;
+      }).catch(err => console.error('Error loading projects:', err));
+    }
+    
+    function loadMentorsData() {
+      firebase.database().ref('mentors').once('value').then(function(snap) {
+        const mentors = snap.val() || {};
+        const mentorCount = Object.keys(mentors).length;
+        const mentorshipEl = document.getElementById('dash-mentorships-count');
+        if (mentorshipEl) mentorshipEl.textContent = mentorCount;
+        
+        // Update session info with first mentor if available
+        const firstMentor = Object.values(mentors)[0];
+        if (firstMentor) {
+          const mentorNameEl = document.getElementById('next-mentor-name');
+          const sessionInitial = document.getElementById('session-initial');
+          if (mentorNameEl) mentorNameEl.textContent = firstMentor.name || 'Mentor';
+          if (sessionInitial) sessionInitial.textContent = (firstMentor.name || 'M').charAt(0).toUpperCase();
+        }
+      }).catch(err => console.error('Error loading mentors:', err));
+    }
+    
+    function loadCertificatesCount() {
+      firebase.database().ref('users').once('value').then(function(snap) {
+        const users = snap.val() || {};
+        const certEl = document.getElementById('dash-cert-count');
+        if (certEl) certEl.textContent = Object.keys(users).length;
+      }).catch(err => console.error('Error loading certificates:', err));
+    }
+    
+    function updateProgress() {
+      const checkboxes = document.querySelectorAll('.checkb input');
+      const total = checkboxes.length;
+      const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+      const percent = (checked / total) * 100;
+      const progressBar = document.getElementById('your-progress');
+      if (progressBar) progressBar.value = percent;
+      
+      // Save to Firebase
+      if (typeof firebase !== 'undefined') {
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+            firebase.database().ref('users/' + user.uid + '/progress').set({
+              completedSkills: checked,
+              totalSkills: total,
+              percent: percent,
+              updatedAt: Date.now()
+            });
+          }
+        });
+      }
+    }
+    
+    function removeSkeleton() {
+      const skeleton = document.getElementById('sk-overlay-dashboard');
+      if (skeleton) {
+        setTimeout(() => {
+          skeleton.style.opacity = '0';
+          setTimeout(() => skeleton.remove(), 300);
+        }, 500);
+      }
+    }
+    
+    // Set current date for next session
+    const sessionDate = document.getElementById('dash-next-session');
+    if (sessionDate) {
+      const nextDate = new Date();
+      nextDate.setDate(nextDate.getDate() + 7);
+      sessionDate.textContent = nextDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' — 2:30pm';
+    }
   </script>
 </body>
 </html>

@@ -5,39 +5,285 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Account | MentorLink</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="fontawesome/css/all.min.css" />
 
-  <!-- Firebase v9 compat (load before app JS) -->
+  <!-- Firebase v9 compat -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-  <!-- App JS (after Firebase) -->
-  <script src="mentorlink.js"></script>
+  <style>
+    @keyframes sk-pulse {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .profile-container {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .profile-image-section {
+      text-align: center;
+      flex: 0 0 200px;
+    }
+    #profile-img-preview {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #4f46e5;
+      margin-bottom: 1rem;
+    }
+    .profile-form-section {
+      flex: 1;
+      min-width: 300px;
+    }
+    .success-msg {
+      background: #d1fae5;
+      color: #065f46;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+  </style>
 </head>
 <body>
   <header>
-    <h1>My Account</h1>
+    <h1><i class="fa fa-user-circle"></i> My Account</h1>
     <nav>
       <a href="dashboard-1.html">Dashboard</a>
       <a href="MentorPage.html">Mentors</a>
       <a href="Landing.html">Home</a>
-      <span class="logout" style="cursor:pointer">Logout</span>
+      <span class="logout" id="account-logout" style="cursor:pointer; color:#ef4444;">Logout</span>
     </nav>
   </header>
+
+  <!-- Skeleton Loading Overlay -->
+  <div id="sk-overlay-account" style="position:fixed;inset:0;z-index:9998;background:#f1f5f9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem">
+    <div style="font-size:1.3rem;font-weight:800;color:#1e293b"><i class="fa fa-spinner fa-spin"></i> Loading Account...</div>
+    <div style="width:300px;height:200px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+  </div>
+
   <main>
     <section>
-      <h2>Profile</h2>
-      <form id="profile-form">
-        <label for="profile-name">Full Name</label>
-        <input type="text" id="profile-name" placeholder="Your Name">
-        <label for="profile-email">Email</label>
-        <input type="email" id="profile-email" disabled>
-        <label for="profile-image">Profile Image</label>
-        <input type="file" id="profile-image" accept="image/*">
-        <img id="profile-img-preview" src="" alt="Profile Preview" style="max-width:120px;display:none;border-radius:50%;object-fit:cover;margin-top:8px;">
-        <button type="submit">Save Profile</button>
-      </form>
+      <h2>Profile Settings</h2>
+      <div id="account-success" class="success-msg"></div>
+      <div id="account-error" class="success-msg" style="background:#fee2e2; color:#991b1b;"></div>
+      
+      <div class="profile-container">
+        <div class="profile-image-section">
+          <img id="profile-img-preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect fill='%23e2e8f0' width='150' height='150'/%3E%3C/svg%3E" alt="Profile Preview">
+          <input type="file" id="profile-image" accept="image/*" style="margin-top: 0.5rem;">
+        </div>
+        
+        <div class="profile-form-section">
+          <form id="profile-form">
+            <label for="profile-name">Full Name</label>
+            <input type="text" id="profile-name" placeholder="Your Full Name" required>
+            
+            <label for="profile-email">Email Address</label>
+            <input type="email" id="profile-email" disabled>
+            
+            <label for="profile-role">Role</label>
+            <select id="profile-role" style="padding: 0.75rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+              <option value="student">Student</option>
+              <option value="mentor">Mentor</option>
+              <option value="organization">Organization</option>
+            </select>
+            
+            <label for="profile-bio">Bio</label>
+            <textarea id="profile-bio" rows="3" placeholder="Tell us about yourself..." style="padding: 0.75rem; border-radius: 8px; border: 1px solid #e2e8f0; font-family: inherit;"></textarea>
+            
+            <button type="submit">Save Profile</button>
+          </form>
+        </div>
+      </div>
+    </section>
+    
+    <section>
+      <h2>Account Statistics</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+        <div class="stat-card" style="background: white; padding: 1rem; border-radius: 12px; text-align: center;">
+          <i class="fa fa-calendar" style="font-size: 1.5rem; color: #4f46e5;"></i>
+          <h3 id="member-since">-</h3>
+          <p>Member Since</p>
+        </div>
+        <div class="stat-card" style="background: white; padding: 1rem; border-radius: 12px; text-align: center;">
+          <i class="fa fa-project-diagram" style="font-size: 1.5rem; color: #4f46e5;"></i>
+          <h3 id="user-projects">0</h3>
+          <p>Projects</p>
+        </div>
+        <div class="stat-card" style="background: white; padding: 1rem; border-radius: 12px; text-align: center;">
+          <i class="fa fa-certificate" style="font-size: 1.5rem; color: #4f46e5;"></i>
+          <h3 id="user-certificates">0</h3>
+          <p>Certificates</p>
+        </div>
+      </div>
     </section>
   </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof firebase !== 'undefined') {
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (!user) {
+            window.location.href = 'LogIn.html';
+            return;
+          }
+          loadUserProfile(user);
+          loadUserStats(user);
+        });
+      }
+      
+      // Profile image preview
+      const imageInput = document.getElementById('profile-image');
+      if (imageInput) {
+        imageInput.addEventListener('change', function(e) {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+              const preview = document.getElementById('profile-img-preview');
+              if (preview) preview.src = evt.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+      
+      // Profile form submission
+      const profileForm = document.getElementById('profile-form');
+      if (profileForm) {
+        profileForm.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          
+          const user = firebase.auth().currentUser;
+          if (!user) return;
+          
+          const name = document.getElementById('profile-name')?.value || '';
+          const role = document.getElementById('profile-role')?.value || 'student';
+          const bio = document.getElementById('profile-bio')?.value || '';
+          let image = null;
+          
+          const imageFile = document.getElementById('profile-image')?.files[0];
+          if (imageFile) {
+            image = await readFileAsBase64(imageFile);
+          } else {
+            const currentData = await firebase.database().ref('users/' + user.uid).once('value');
+            image = currentData.val()?.image || null;
+          }
+          
+          const profileData = {
+            name: name,
+            email: user.email,
+            role: role,
+            bio: bio,
+            image: image,
+            updatedAt: Date.now()
+          };
+          
+          firebase.database().ref('users/' + user.uid).update(profileData)
+            .then(() => {
+              const successDiv = document.getElementById('account-success');
+              if (successDiv) {
+                successDiv.style.display = 'block';
+                successDiv.innerHTML = 'Profile updated successfully!';
+                setTimeout(() => successDiv.style.display = 'none', 3000);
+              }
+            })
+            .catch(err => {
+              const errorDiv = document.getElementById('account-error');
+              if (errorDiv) {
+                errorDiv.style.display = 'block';
+                errorDiv.innerHTML = 'Error: ' + err.message;
+                setTimeout(() => errorDiv.style.display = 'none', 3000);
+              }
+            });
+        });
+      }
+      
+      // Logout
+      const logoutBtn = document.getElementById('account-logout');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', function() {
+          firebase.auth().signOut().then(() => {
+            window.location.href = 'LogIn.html';
+          });
+        });
+      }
+    });
+    
+    function readFileAsBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+    
+    async function loadUserProfile(user) {
+      try {
+        const snap = await firebase.database().ref('users/' + user.uid).once('value');
+        const profile = snap.val() || {};
+        
+        const nameInput = document.getElementById('profile-name');
+        const emailInput = document.getElementById('profile-email');
+        const roleSelect = document.getElementById('profile-role');
+        const bioTextarea = document.getElementById('profile-bio');
+        const previewImg = document.getElementById('profile-img-preview');
+        
+        if (nameInput) nameInput.value = profile.name || '';
+        if (emailInput) emailInput.value = user.email || '';
+        if (roleSelect) roleSelect.value = profile.role || 'student';
+        if (bioTextarea) bioTextarea.value = profile.bio || '';
+        if (previewImg && profile.image) previewImg.src = profile.image;
+        
+        // Remove skeleton
+        const skeleton = document.getElementById('sk-overlay-account');
+        if (skeleton) skeleton.remove();
+        
+      } catch (error) {
+        console.error('Error loading profile:', error);
+        const skeleton = document.getElementById('sk-overlay-account');
+        if (skeleton) skeleton.remove();
+      }
+    }
+    
+    async function loadUserStats(user) {
+      try {
+        // Get member since date
+        const userSnap = await firebase.database().ref('users/' + user.uid).once('value');
+        const createdAt = userSnap.val()?.createdAt || user.metadata.creationTime;
+        const memberSince = new Date(createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+        document.getElementById('member-since').textContent = memberSince;
+        
+        // Get user projects
+        const projectsSnap = await firebase.database().ref('projects').once('value');
+        const projects = projectsSnap.val() || {};
+        const userProjects = Object.values(projects).filter(p => p.createdBy === user.uid);
+        document.getElementById('user-projects').textContent = userProjects.length;
+        
+        // Get certificates count
+        const usersSnap = await firebase.database().ref('users').once('value');
+        document.getElementById('user-certificates').textContent = Object.keys(usersSnap.val() || {}).length;
+        
+      } catch (error) {
+        console.error('Error loading stats:', error);
+      }
+    }
+  </script>
+   <script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/69e2c95da7ff261c327a9c4c/1jmeu55bc';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
 </body>
 </html>

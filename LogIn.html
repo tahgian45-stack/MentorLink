@@ -2,59 +2,273 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="LogIn.css">
-  <link rel="stylesheet" href="fontawesome/css/all.min.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Log In — MentorLink</title>
+  <title>Log In | MentorLink</title>
+  <link rel="stylesheet" href="LogIn.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="fontawesome/css/all.min.css">
 
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script src="mentorlink.js"></script>
 
   <style>
-  @keyframes sk-pulse { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-</style>
+    @keyframes sk-pulse { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideInLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+    
+    .error-message {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      display: none;
+      font-size: 0.875rem;
+    }
+    .success-message {
+      background: #d1fae5;
+      color: #065f46;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      display: none;
+      font-size: 0.875rem;
+    }
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 0.6s linear infinite;
+      margin-right: 8px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  </style>
 </head>
 <body>
   <div id="sk-overlay-login" style="position:fixed;inset:0;z-index:9998;background:#f1f5f9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem">
-  <div style="width:320px;display:flex;flex-direction:column;gap:.75rem">
-    <div style="height:20px;width:50%;background:#e2e8f0;border-radius:6px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-    <div style="height:14px;width:80%;background:#d1d5db;border-radius:6px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-    <div style="height:36px;width:100%;background:#e2e8f0;border-radius:8px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-    <div style="height:36px;width:100%;background:#e2e8f0;border-radius:8px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-    <div style="height:36px;width:100%;background:#e2e8f0;border-radius:8px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+    <div style="width:320px;display:flex;flex-direction:column;gap:.75rem">
+      <div style="height:20px;width:50%;background:#e2e8f0;border-radius:6px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+      <div style="height:14px;width:80%;background:#d1d5db;border-radius:6px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+      <div style="height:44px;width:100%;background:#e2e8f0;border-radius:10px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+      <div style="height:44px;width:100%;background:#e2e8f0;border-radius:10px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+      <div style="height:44px;width:100%;background:#4f46e5;border-radius:10px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+    </div>
   </div>
-</div>
-  <form>
+  
+  <form id="login-form" style="animation:fadeIn .6s ease-out">
     <div id="form">
       <h2>Welcome back!</h2>
       <p>Log in to continue to MentorLink</p>
     </div>
+    
     <div id="list">
-      <label for="Email">Email</label>
-      <input type="email" id="log-email" placeholder="Enter your email" required>
+      <div id="login-error" class="error-message"></div>
+      <div id="login-success" class="success-message"></div>
+      
+      <div class="form-group" style="animation:slideInLeft .5s ease-out;animation-fill-mode:both">
+        <label for="log-email">Email Address</label>
+        <input type="email" id="log-email" placeholder="Enter your email" required autocomplete="email">
+      </div>
 
-      <label for="password">Password</label>
-      <input type="password" id="log-pass" placeholder="Enter your password" required>
+      <div class="form-group" style="animation:slideInLeft .5s ease-out .1s;animation-fill-mode:both">
+        <label for="log-pass">Password</label>
+        <input type="password" id="log-pass" placeholder="Enter your password" required autocomplete="current-password">
+      </div>
 
-      <a href="#" id="pass">Forgot password?</a>
+      <a href="#" id="pass" class="forgot-link" style="animation:slideInLeft .5s ease-out .2s;animation-fill-mode:both">Forgot password?</a>
 
-      <button type="submit">Log In</button>
+      <button type="submit" id="login-btn" class="btn-primary" style="animation:slideInLeft .5s ease-out .3s;animation-fill-mode:both">
+        Log In
+      </button>
 
-      <div id="sign">
+      <div id="sign" style="animation:slideInLeft .5s ease-out .4s;animation-fill-mode:both">
         <p>Don't have an account?</p>
         <a href="signupgageGE.html">Sign Up</a>
       </div>
     </div>
   </form>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    var s = document.getElementById('sk-overlay-login');
-    if(s) s.remove();
-  });
-</script>
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBNMY2hoXQEGnp7bHnxxRVAACHjCcU5ObE",
+      authDomain: "rgskillbridge.firebaseapp.com",
+      projectId: "rgskillbridge",
+      storageBucket: "rgskillbridge.firebasestorage.app",
+      messagingSenderId: "1044569946706",
+      appId: "1:1044569946706:web:6acefd55d6900d98dbbd8b",
+      measurementId: "G-3F9KCBW4MD",
+    };
+    
+    // Initialize Firebase if not already initialized
+    if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Remove skeleton overlay
+      var s = document.getElementById('sk-overlay-login');
+      if(s) s.remove();
+      
+      // Check if user is already logged in
+      if (typeof firebase !== 'undefined') {
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+            // User is already logged in, redirect to dashboard
+            window.location.href = 'dashboard-1.html';
+          }
+        });
+      }
+      
+      // Handle login form submission
+      const loginForm = document.getElementById('login-form');
+      const loginBtn = document.getElementById('login-btn');
+      const emailInput = document.getElementById('log-email');
+      const passwordInput = document.getElementById('log-pass');
+      const errorDiv = document.getElementById('login-error');
+      const successDiv = document.getElementById('login-success');
+      
+      if (loginForm) {
+        loginForm.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          
+          // Clear previous messages
+          if (errorDiv) errorDiv.style.display = 'none';
+          if (successDiv) successDiv.style.display = 'none';
+          
+          const email = emailInput?.value.trim();
+          const password = passwordInput?.value;
+          
+          // Validate inputs
+          if (!email || !password) {
+            showError('Please fill in all fields.');
+            return;
+          }
+          
+          if (password.length < 6) {
+            showError('Password must be at least 6 characters.');
+            return;
+          }
+          
+          // Show loading state
+          const originalBtnText = loginBtn.innerHTML;
+          loginBtn.innerHTML = '<span class="loading-spinner"></span> Logging in...';
+          loginBtn.disabled = true;
+          
+          try {
+            // Sign in with Firebase
+            const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+            const user = userCredential.user;
+            
+            // Check if user exists in database, if not create entry
+            const userRef = firebase.database().ref('users/' + user.uid);
+            const userSnap = await userRef.once('value');
+            
+            if (!userSnap.exists()) {
+              // Create basic user profile
+              await userRef.set({
+                email: user.email,
+                name: user.displayName || email.split('@')[0],
+                role: 'student',
+                createdAt: Date.now(),
+                lastLogin: Date.now()
+              });
+            } else {
+              // Update last login
+              await userRef.update({
+                lastLogin: Date.now()
+              });
+            }
+            
+            // Show success message
+            if (successDiv) {
+              successDiv.style.display = 'block';
+              successDiv.innerHTML = 'Login successful! Redirecting...';
+            }
+            
+            // Redirect to dashboard
+            setTimeout(() => {
+              window.location.href = 'dashboard-1.html';
+            }, 1000);
+            
+          } catch (error) {
+            console.error('Login error:', error);
+            let errorMessage = 'Login failed. ';
+            
+            switch (error.code) {
+              case 'auth/user-not-found':
+                errorMessage += 'No account found with this email. Please sign up first.';
+                break;
+              case 'auth/wrong-password':
+                errorMessage += 'Incorrect password. Please try again.';
+                break;
+              case 'auth/invalid-email':
+                errorMessage += 'Invalid email format.';
+                break;
+              case 'auth/user-disabled':
+                errorMessage += 'This account has been disabled.';
+                break;
+              case 'auth/too-many-requests':
+                errorMessage += 'Too many failed attempts. Please try again later.';
+                break;
+              default:
+                errorMessage += error.message;
+            }
+            
+            showError(errorMessage);
+            loginBtn.innerHTML = originalBtnText;
+            loginBtn.disabled = false;
+          }
+        });
+      }
+      
+      // Forgot password functionality
+      const forgotLink = document.getElementById('pass');
+      if (forgotLink) {
+        forgotLink.addEventListener('click', async function(e) {
+          e.preventDefault();
+          const email = emailInput?.value.trim();
+          
+          if (!email) {
+            showError('Please enter your email address to reset password.');
+            return;
+          }
+          
+          try {
+            await firebase.auth().sendPasswordResetEmail(email);
+            if (successDiv) {
+              successDiv.style.display = 'block';
+              successDiv.innerHTML = 'Password reset email sent! Check your inbox.';
+            }
+          } catch (error) {
+            console.error('Password reset error:', error);
+            showError('Failed to send reset email. Please try again.');
+          }
+        });
+      }
+      
+      function showError(message) {
+        if (errorDiv) {
+          errorDiv.style.display = 'block';
+          errorDiv.innerHTML = message;
+        }
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+          if (errorDiv) errorDiv.style.display = 'none';
+        }, 5000);
+      }
+    });
+  </script>
 </body>
 </html>

@@ -5,36 +5,78 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign Up — MentorLink</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="fontawesome/css/all.min.css" />
 
   <!-- Firebase Core + Auth + DB SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script src="mentorlink.js"></script>
 
   <style>
-  @keyframes sk-pulse { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-</style>
+    @keyframes sk-pulse { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    
+    .error-message {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      display: none;
+      font-size: 0.875rem;
+    }
+    .success-message {
+      background: #d1fae5;
+      color: #065f46;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      display: none;
+      font-size: 0.875rem;
+    }
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 0.6s linear infinite;
+      margin-right: 8px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    .password-strength {
+      height: 4px;
+      background: #e2e8f0;
+      border-radius: 2px;
+      margin-top: 5px;
+      transition: all 0.3s;
+    }
+    .strength-weak { width: 33%; background: #ef4444; }
+    .strength-medium { width: 66%; background: #f59e0b; }
+    .strength-strong { width: 100%; background: #10b981; }
+  </style>
 </head>
 <body>
   <div id="sk-overlay-signup" style="position:fixed;inset:0;z-index:9998;background:#f1f5f9;display:flex;align-items:center;justify-content:center;gap:2rem;flex-wrap:wrap;padding:2rem">
-  <div style="width:240px;display:flex;flex-direction:column;gap:.6rem">
-    <div style="height:24px;width:80%;background:#e2e8f0;border-radius:6px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-    <div style="height:14px;width:100%;background:#d1d5db;border-radius:6px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-    <div style="height:14px;width:90%;background:#d1d5db;border-radius:6px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+    <div style="width:240px;display:flex;flex-direction:column;gap:.6rem">
+      <div style="height:24px;width:80%;background:#e2e8f0;border-radius:6px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+      <div style="height:14px;width:100%;background:#d1d5db;border-radius:6px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+      <div style="height:14px;width:90%;background:#d1d5db;border-radius:6px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
+    </div>
   </div>
-  <div style="display:flex;gap:.6rem">
-    <div style="width:140px;height:140px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-    <div style="width:140px;height:140px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-    <div style="width:140px;height:140px;background:#e2e8f0;border-radius:16px;animation:sk-pulse 1.4s ease-in-out infinite"></div>
-  </div>
-</div>
+  
   <nav>
     <a href="dashboard-1.html">Dashboard</a>
     <a href="Account.html">Account</a>
     <a href="AdminPanel.html">Admin</a>
     <a href="Landing.html">Home</a>
-    <span class="logout" style="cursor:pointer;">Logout</span>
+    <a href="LogIn.html">Login</a>
   </nav>
 
   <div class="container">
@@ -42,33 +84,39 @@
     <div class="left-section">
       <h1>Create your <br>MentorLink <br>account</h1>
       <p>Join as a student, mentor<br>or organization.</p>
-      <img src="OFYNE8601.JPG" alt="MentorLink" />
+      <div style="font-size: 4rem; color: #4f46e5; margin-top: 2rem;">
+        <i class="fa fa-handshake"></i>
+      </div>
     </div>
 
     <!-- RIGHT — sign-up form -->
     <div class="right-section">
       <h2>Register as</h2>
 
+      <div id="signup-error" class="error-message"></div>
+      <div id="signup-success" class="success-message"></div>
+
       <div class="role-buttons">
         <button class="active" id="role-student" onclick="setRole(this)">Student</button>
-        <button id="role-mentor"    onclick="setRole(this)">Mentor</button>
-        <button id="role-org"       onclick="setRole(this)">Organization</button>
+        <button id="role-mentor" onclick="setRole(this)">Mentor</button>
+        <button id="role-org" onclick="setRole(this)">Organization</button>
       </div>
 
       <form id="register-form">
-        <label for="reg-name">Full Name</label>
-        <input type="text"  id="reg-name"  placeholder="Enter your full name" required>
+        <label for="reg-name">Full Name *</label>
+        <input type="text" id="reg-name" placeholder="Enter your full name" required>
 
-        <label for="reg-email">Email</label>
+        <label for="reg-email">Email *</label>
         <input type="email" id="reg-email" placeholder="Enter your email" required>
 
         <label for="reg-phone">Phone Number</label>
-        <input type="tel"   id="reg-phone" placeholder="Enter your phone number" required>
+        <input type="tel" id="reg-phone" placeholder="Enter your phone number">
 
-        <label for="reg-pass">Password</label>
+        <label for="reg-pass">Password * (min. 6 characters)</label>
         <input type="password" id="reg-pass" placeholder="Create a password" required minlength="6">
+        <div class="password-strength" id="password-strength"></div>
 
-        <label for="reg-confirm">Confirm Password</label>
+        <label for="reg-confirm">Confirm Password *</label>
         <input type="password" id="reg-confirm" placeholder="Confirm your password" required>
 
         <!-- Mentor-only fields -->
@@ -78,7 +126,7 @@
 
           <label for="reg-role-title">Professional Title</label>
           <input type="text" id="reg-role-title" placeholder="e.g. Full Stack Developer">
-          <br>
+          
           <label for="reg-rate">Hourly Rate (XAF)</label>
           <input type="number" id="reg-rate" placeholder="e.g. 10000" min="0">
         </div>
@@ -91,7 +139,7 @@
           </label>
         </div>
 
-        <button type="submit" class="create-btn">Create Account</button>
+        <button type="submit" class="create-btn" id="signup-btn">Create Account</button>
 
         <p class="login-text">Already have an account?
           <a href="LogIn.html">Log in</a>
@@ -101,24 +149,240 @@
   </div>
 
   <script>
-    // ── Role toggle ──
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBNMY2hoXQEGnp7bHnxxRVAACHjCcU5ObE",
+      authDomain: "rgskillbridge.firebaseapp.com",
+      projectId: "rgskillbridge",
+      storageBucket: "rgskillbridge.firebasestorage.app",
+      messagingSenderId: "1044569946706",
+      appId: "1:1044569946706:web:6acefd55d6900d98dbbd8b",
+      measurementId: "G-3F9KCBW4MD",
+    };
+    
+    // Initialize Firebase if not already initialized
+    if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+
+    // Role toggle function
     function setRole(btn) {
-      document.querySelectorAll('.role-buttons button').forEach(function(b){ b.classList.remove('active'); });
+      document.querySelectorAll('.role-buttons button').forEach(function(b) { 
+        b.classList.remove('active'); 
+      });
       btn.classList.add('active');
       var mentorFields = document.getElementById('mentor-fields');
-      if (btn.id === 'role-mentor') {
-        mentorFields.style.display = 'block';
-      } else {
-        mentorFields.style.display = 'none';
+      if (mentorFields) {
+        mentorFields.style.display = btn.id === 'role-mentor' ? 'block' : 'none';
       }
     }
-  </script>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    var s = document.getElementById('sk-overlay-signup');
-    if(s) s.remove();
-  });
-</script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Remove skeleton overlay
+      var s = document.getElementById('sk-overlay-signup');
+      if(s) s.remove();
+      
+      // Check if user is already logged in
+      if (typeof firebase !== 'undefined') {
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+            // User is already logged in, redirect to dashboard
+            window.location.href = 'dashboard-1.html';
+          }
+        });
+      }
+      
+      // Password strength indicator
+      const passwordInput = document.getElementById('reg-pass');
+      const strengthDiv = document.getElementById('password-strength');
+      
+      if (passwordInput && strengthDiv) {
+        passwordInput.addEventListener('input', function() {
+          const password = this.value;
+          let strength = 0;
+          
+          if (password.length >= 6) strength++;
+          if (password.match(/[a-z]+/)) strength++;
+          if (password.match(/[A-Z]+/)) strength++;
+          if (password.match(/[0-9]+/)) strength++;
+          if (password.match(/[$@#&!]+/)) strength++;
+          
+          strengthDiv.className = 'password-strength';
+          if (strength <= 2) {
+            strengthDiv.classList.add('strength-weak');
+          } else if (strength <= 4) {
+            strengthDiv.classList.add('strength-medium');
+          } else {
+            strengthDiv.classList.add('strength-strong');
+          }
+        });
+      }
+      
+      // Handle signup form submission
+      const signupForm = document.getElementById('register-form');
+      const signupBtn = document.getElementById('signup-btn');
+      
+      if (signupForm) {
+        signupForm.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          
+          // Clear previous messages
+          const errorDiv = document.getElementById('signup-error');
+          const successDiv = document.getElementById('signup-success');
+          if (errorDiv) errorDiv.style.display = 'none';
+          if (successDiv) successDiv.style.display = 'none';
+          
+          // Get form values
+          const name = document.getElementById('reg-name')?.value.trim();
+          const email = document.getElementById('reg-email')?.value.trim();
+          const phone = document.getElementById('reg-phone')?.value.trim();
+          const password = document.getElementById('reg-pass')?.value;
+          const confirmPwd = document.getElementById('reg-confirm')?.value;
+          const termsChecked = document.getElementById('terms')?.checked;
+          
+          // Get selected role
+          const activeRoleBtn = document.querySelector('.role-buttons button.active');
+          let role = 'student';
+          if (activeRoleBtn) {
+            if (activeRoleBtn.id === 'role-mentor') role = 'mentor';
+            else if (activeRoleBtn.id === 'role-org') role = 'organization';
+          }
+          
+          // Validation
+          if (!name || !email || !password) {
+            showError('Please fill in all required fields.');
+            return;
+          }
+          
+          if (password !== confirmPwd) {
+            showError('Passwords do not match.');
+            return;
+          }
+          
+          if (password.length < 6) {
+            showError('Password must be at least 6 characters.');
+            return;
+          }
+          
+          if (!termsChecked) {
+            showError('Please agree to the Terms & Conditions.');
+            return;
+          }
+          
+          // Email validation
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email)) {
+            showError('Please enter a valid email address.');
+            return;
+          }
+          
+          // Show loading state
+          const originalBtnText = signupBtn.innerHTML;
+          signupBtn.innerHTML = '<span class="loading-spinner"></span> Creating account...';
+          signupBtn.disabled = true;
+          
+          try {
+            // Create user with Firebase Auth
+            const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+            const user = userCredential.user;
+            
+            // Update display name
+            await user.updateProfile({
+              displayName: name
+            });
+            
+            // Prepare profile data
+            const profileData = {
+              name: name,
+              email: email,
+              phone: phone || '',
+              role: role,
+              createdAt: Date.now(),
+              lastLogin: Date.now(),
+              status: 'active'
+            };
+            
+            // Add mentor-specific fields if role is mentor
+            if (role === 'mentor') {
+              const skill = document.getElementById('reg-skill')?.value || '';
+              const title = document.getElementById('reg-role-title')?.value || '';
+              const rate = document.getElementById('reg-rate')?.value || '';
+              
+              profileData.skill = skill;
+              profileData.title = title;
+              profileData.rate = rate;
+              profileData.rating = 5.0;
+              profileData.reviews = 0;
+              
+              // Also save to mentors collection
+              await firebase.database().ref('mentors/' + user.uid).set({
+                uid: user.uid,
+                name: name,
+                email: email,
+                skill: skill,
+                title: title,
+                price: rate ? rate + ' XAF/hour' : 'Contact for rates',
+                rating: 5.0,
+                createdAt: Date.now()
+              });
+            }
+            
+            // Save to users collection
+            await firebase.database().ref('users/' + user.uid).set(profileData);
+            
+            // Show success message
+            if (successDiv) {
+              successDiv.style.display = 'block';
+              successDiv.innerHTML = 'Account created successfully! Redirecting to login...';
+            }
+            
+            // Sign out and redirect to login
+            await firebase.auth().signOut();
+            
+            setTimeout(() => {
+              window.location.href = 'LogIn.html';
+            }, 2000);
+            
+          } catch (error) {
+            console.error('Signup error:', error);
+            let errorMessage = 'Signup failed. ';
+            
+            switch (error.code) {
+              case 'auth/email-already-in-use':
+                errorMessage += 'This email is already registered. Please login instead.';
+                break;
+              case 'auth/invalid-email':
+                errorMessage += 'Invalid email format.';
+                break;
+              case 'auth/weak-password':
+                errorMessage += 'Password is too weak. Please use at least 6 characters.';
+                break;
+              case 'auth/operation-not-allowed':
+                errorMessage += 'Email/password accounts are not enabled.';
+                break;
+              default:
+                errorMessage += error.message;
+            }
+            
+            showError(errorMessage);
+            signupBtn.innerHTML = originalBtnText;
+            signupBtn.disabled = false;
+          }
+        });
+      }
+      
+      function showError(message) {
+        const errorDiv = document.getElementById('signup-error');
+        if (errorDiv) {
+          errorDiv.style.display = 'block';
+          errorDiv.innerHTML = message;
+        }
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+          if (errorDiv) errorDiv.style.display = 'none';
+        }, 5000);
+      }
+    });
+  </script>
 </body>
 </html>
